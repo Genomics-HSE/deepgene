@@ -1,0 +1,40 @@
+include 'configs/big_config.gin'
+
+checkpoint_path = "output/RM.ckpt"
+
+train_model.model = @ReformerLabeler()
+train_model.checkpoint_path = %checkpoint_path
+
+##########################
+#  Model
+##########################
+ReformerLabeler.config = @ReformerConfig()
+ReformerConfig.attention_head_size = 32
+ReformerConfig.attn_layers  = ["local", "local", "local", "local"]
+ReformerConfig.axial_pos_embds_dim = [12, 20]  # sum is equal to hidden_size
+ReformerConfig.axial_pos_shape = [128, 256] # product max_embedding_size [128, 256]
+ReformerConfig.chunk_size_lm_head = 0
+ReformerConfig.eos_token_id = None
+ReformerConfig.feed_forward_size = 32
+ReformerConfig.hidden_size = 32
+ReformerConfig.local_chunk_length = 1000
+ReformerConfig.local_num_chunks_before = 1
+ReformerConfig.local_num_chunks_after = 1
+ReformerConfig.max_position_embeddings = 32768
+ReformerConfig.num_attention_heads = 4
+ReformerConfig.use_cache = False
+ReformerConfig.vocab_size = 2
+ReformerConfig.pad_token_id = None
+ReformerConfig.return_dict = False
+
+ReformerLabeler.predictor = @Predictor()
+Predictor.d_model = 64
+Predictor.dropout = 0.1
+Predictor.n_class = 32
+
+##########################
+#  Testing
+##########################
+
+test_model.checkpoint_path = %checkpoint_path
+test_model.model = @ReformerLabeler()
