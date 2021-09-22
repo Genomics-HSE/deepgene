@@ -14,8 +14,7 @@ class MyModule(LightningModule):
         X_batch, y_batch = batch
         logits = self.forward(X_batch)
         
-        y_batch_ordinal = self.ordinal_transform(y_batch, 32)
-        loss = self.loss(logits, y_batch_ordinal)
+        loss = self.loss(logits, y_batch)
         self.log("train_loss", loss, on_step=True, on_epoch=True)
         return {'loss': loss,
                 }
@@ -39,7 +38,3 @@ class MyModule(LightningModule):
     def save(self, trainer, checkpoint_path):
         print('saving to {parameters_path}'.format(parameters_path=checkpoint_path))
         trainer.save_checkpoint(filepath=checkpoint_path)
-
-    def ordinal_transform(self, y_data, num_classes):
-        # y_data (batch_size, seq_len)
-        return (y_data[:, :, None] > torch.arange(num_classes-1)).type(torch.FloatTensor)

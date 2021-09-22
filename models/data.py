@@ -48,7 +48,12 @@ class DatasetPL(pl.LightningDataModule):
         Y = [item[1] for item in batch]
         X = torch.LongTensor(X)
         Y = torch.LongTensor(Y)
-        return [X, Y]
+        Y_ordinal = self.ordinal_transform(Y)
+        return [X, Y_ordinal]
+
+    def ordinal_transform(self, y_data):
+        # y_data (batch_size, seq_len)
+        return (y_data[:, :, None] > torch.arange(self.n_class-1)).type(torch.FloatTensor)
 
 
 class DatasetTorch(data.IterableDataset):
@@ -62,7 +67,6 @@ class DatasetTorch(data.IterableDataset):
 
 def one_hot_encoding_numpy(y_data, num_class):
     return (np.arange(num_class) == y_data[..., None]).astype(np.float32)
-
 
 
 if __name__ == '__main__':
