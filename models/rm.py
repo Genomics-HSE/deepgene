@@ -49,5 +49,5 @@ class OrdinalHead(LightningModule):
     
     def forward(self, X):
         output = self.dense1(X)
-        output = F.sigmoid(output + self.bias)
+        output = torch.sigmoid(output + self.bias)
         return output
