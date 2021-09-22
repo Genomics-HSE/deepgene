@@ -35,7 +35,10 @@ def test_model(model: LightningModule,
             Y_pred = model(X)
             Y = Y.squeeze(0)
             Y_pred = F.softmax(Y_pred.squeeze(0), dim=-1)
-            f = make_coalescent_heatmap("", (Y_pred.T, Y))
-            plt.show()
+            
+            step = 20000
+            for j in range(0, len(Y), step):
+                f = make_coalescent_heatmap("", (Y_pred[j:j+step].T, Y[j:j+step]))
+                plt.show()
             return
     return

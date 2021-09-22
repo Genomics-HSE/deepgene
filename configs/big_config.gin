@@ -27,7 +27,7 @@ test/get_liner_generator.random_seed = 33
 
 DatasetPL.seq_len = %seq_len
 DatasetPL.n_class = 32
-DatasetPL.batch_size = 16
+DatasetPL.batch_size = 8 
 DatasetPL.num_workers = 8
 
 ##########################
@@ -36,10 +36,10 @@ DatasetPL.num_workers = 8
 train_model.trainer = @Trainer()
 train_model.data_module = @DatasetPL()
 Trainer.default_root_dir = %output
-Trainer.max_epochs = 10
+Trainer.max_epochs = 3 
 Trainer.checkpoint_callback = False
 Trainer.logger = False
-Trainer.gpus = 1
+Trainer.gpus = 0
 
 train_model.resume = False
 

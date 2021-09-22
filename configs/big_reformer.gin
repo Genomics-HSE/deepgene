@@ -1,6 +1,6 @@
 include 'configs/big_config.gin'
 
-checkpoint_path = "output/RM.ckpt"
+checkpoint_path = "RM.ckpt"
 
 train_model.model = @ReformerLabeler()
 train_model.checkpoint_path = %checkpoint_path
@@ -31,6 +31,10 @@ ReformerLabeler.predictor = @Predictor()
 Predictor.d_model = 64
 Predictor.dropout = 0.1
 Predictor.n_class = 32
+
+ReformerLabeler.ordinal_head = @OrdinalHead()
+OrdinalHead.d_model = 32
+OrdinalHead.n_class = 32
 
 ##########################
 #  Testing

@@ -8,6 +8,7 @@ ReformerConfig = gin.external_configurable(ReformerConfig)
 
 ReformerLabeler = gin.external_configurable(rm.ReformerLabeler)
 Predictor = gin.external_configurable(rm.Predictor)
+OrdinalHead = gin.external_configurable(rm.OrdinalHead)
 DatasetPL = gin.external_configurable(data.DatasetPL)
 DatasetTorch = gin.external_configurable(data.DatasetTorch)
 get_liner_generator = gin.external_configurable(data_gen_np.get_liner_generator)
