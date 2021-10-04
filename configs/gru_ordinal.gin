@@ -1,0 +1,11 @@
+include 'configs/gru.gin'
+
+checkpoint_path = "output/GRU-ordinal.ckpt"
+
+train_model.model = @GruLabelerOrdinal()
+test_model.model = @GruLabelerOrdinal()
+
+GruLabelerOrdinal.labeler = @GruLabeler()
+GruLabelerOrdinal.ordinal_head = @OrdinalHead()
+OrdinalHead.d_model = %n_class
+OrdinalHead.n_class = %n_class

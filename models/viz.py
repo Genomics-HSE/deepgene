@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import torch
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 
@@ -7,7 +8,10 @@ def make_coalescent_heatmap(model_name, averaged_data_tuple, dpi=200):
     # f = plt.figure(, dpi=dpi)
     f, ax = plt.subplots(1, 1, dpi=dpi)  # figsize=(200, 10)
     im0 = ax.imshow(averaged_data_tuple[0], cmap='Wistia', aspect='auto')
+    #ax.plot(torch.sum(averaged_data_tuple[1], dim=1), lw=1, c='black', label="True")
     ax.plot(averaged_data_tuple[1], lw=1, c='black', label="True")
+    ax.plot(torch.sum(averaged_data_tuple[0] > 0.5, dim=0), lw=1, c='green', label="Model")
+    
     #ax.plot(np.argmax(averaged_data_tuple[0], axis=0), lw=1, c='black', linestyle="--", label="Model")
     # create an axes on the right side of ax. The width of cax will be 5%
     # of ax and the padding between cax and ax will be fixed at 0.05 inch.

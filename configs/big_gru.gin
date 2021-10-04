@@ -1,0 +1,38 @@
+include 'configs/config.gin'
+
+checkpoint_path = "output/GRU.ckpt"
+n_class = 32
+
+train_model.model = @GruLabeler()
+train_model.checkpoint_path = %checkpoint_path
+
+##########################
+#  Model
+##########################
+GruLabeler.embedding = @ConvEmbedding() #Embedding
+#GruLabeler.embedding = @Embedding()
+
+Embedding.num_embeddings = 2
+Embedding.embedding_dim = %n_class
+
+ConvEmbedding.in_channels = 1
+ConvEmbedding.out_channels = %n_class
+ConvEmbedding.kernel_size = 10
+ConvEmbedding.stride = 1
+
+
+GruLabeler.n_class = %n_class
+GruLabeler.hidden_size = %n_class
+GruLabeler.num_layers = 2
+
+GruLabeler.predictor = @Predictor()
+Predictor.d_model = 64
+Predictor.dropout = 0.1
+Predictor.n_class = %n_class
+
+##########################
+#  Testing
+##########################
+
+test_model.checkpoint_path = %checkpoint_path
+test_model.model = @GruLabeler()

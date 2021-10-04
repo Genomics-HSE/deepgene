@@ -1,4 +1,5 @@
 import gin
+import torch.nn as nn
 from models import rm, data_gen_np, data, train_test
 from pytorch_lightning import Trainer
 from transformers import ReformerConfig
@@ -6,9 +7,15 @@ from transformers import ReformerConfig
 Trainer = gin.external_configurable(Trainer)
 ReformerConfig = gin.external_configurable(ReformerConfig)
 
+Embedding = gin.external_configurable(nn.Embedding)
+ConvEmbedding = gin.external_configurable(rm.ConvEmbedding)
+
 ReformerLabeler = gin.external_configurable(rm.ReformerLabeler)
+GruLabeler = gin.external_configurable(rm.GruLabeler)
+GruLabelerOrdinal = gin.external_configurable(rm.GruLabelerOrdinal)
 Predictor = gin.external_configurable(rm.Predictor)
 OrdinalHead = gin.external_configurable(rm.OrdinalHead)
+
 DatasetPL = gin.external_configurable(data.DatasetPL)
 DatasetTorch = gin.external_configurable(data.DatasetTorch)
 get_liner_generator = gin.external_configurable(data_gen_np.get_liner_generator)

@@ -9,7 +9,7 @@ output = "output"
 
 seq_len = 320
 
-get_liner_generator.num_genomes = 10
+get_liner_generator.num_genomes = 20000
 get_liner_generator.genome_length = %seq_len
 get_liner_generator.num_generators = 1
 
@@ -24,11 +24,12 @@ val/get_liner_generator.random_seed = 22
 DatasetPL.test_dataset = @test/DatasetTorch()
 test/DatasetTorch.data_generator = @test/get_liner_generator()
 test/get_liner_generator.random_seed = 33
+test/get_liner_generator.num_genomes = 5
 
 DatasetPL.seq_len = %seq_len
 DatasetPL.n_class = 32
-DatasetPL.batch_size = 4
-DatasetPL.num_workers = 4
+DatasetPL.batch_size = 64
+DatasetPL.num_workers = 0
 
 ##########################
 #  Training
@@ -36,7 +37,7 @@ DatasetPL.num_workers = 4
 train_model.trainer = @Trainer()
 train_model.data_module = @DatasetPL()
 Trainer.default_root_dir = %output
-Trainer.max_epochs = 50
+Trainer.max_epochs = 1
 Trainer.checkpoint_callback = False
 Trainer.logger = False
 Trainer.gpus = 0
@@ -46,6 +47,6 @@ train_model.resume = False
 ##########################
 #  Testing
 ##########################
-
+test_model.trainer = @Trainer()
 test_model.datamodule = @DatasetPL()
 test_model.test_output = ""

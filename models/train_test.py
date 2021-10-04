@@ -23,22 +23,12 @@ def train_model(trainer: Trainer,
     return trainer, model
 
 
-def test_model(model: LightningModule,
+def test_model(trainer: Trainer,
+               model: LightningModule,
                checkpoint_path: str,
                test_output: str,
                datamodule: LightningDataModule,
                ):
     model = model.load_from_checkpoint(checkpoint_path=checkpoint_path)
-    test_data_loader = datamodule.test_dataloader()
-    with torch.no_grad():
-        for i, (X, Y) in enumerate(test_data_loader):
-            Y_pred = model(X)
-            Y = Y.squeeze(0)
-            Y_pred = F.softmax(Y_pred.squeeze(0), dim=-1)
-            
-            step = 20000
-            for j in range(0, len(Y), step):
-                f = make_coalescent_heatmap("", (Y_pred[j:j+step].T, Y[j:j+step]))
-                plt.show()
-            return
+    trainer.test(model=model, datamodule=datamodule)
     return

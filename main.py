@@ -16,7 +16,7 @@ if __name__ == '__main__':
     
     if args.action == "train":
         train_model()
-    elif args.action == "predict":
+    elif args.action == "test":
         test_model()
     else:
         ValueError("Choose train or predict")

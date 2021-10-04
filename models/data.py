@@ -1,5 +1,6 @@
 import os
 from typing import Union, List, Optional
+from itertools import cycle
 
 import torch
 import pytorch_lightning as pl
@@ -42,18 +43,13 @@ class DatasetPL(pl.LightningDataModule):
                           batch_size=1,
                           num_workers=self.num_workers,
                           )
-
+    
     def genomes_collate(self, batch):
         X = [item[0] for item in batch]
         Y = [item[1] for item in batch]
         X = torch.LongTensor(X)
         Y = torch.LongTensor(Y)
-        Y_ordinal = self.ordinal_transform(Y)
-        return [X, Y_ordinal]
-
-    def ordinal_transform(self, y_data):
-        # y_data (batch_size, seq_len)
-        return (y_data[:, :, None] > torch.arange(self.n_class-1)).type(torch.FloatTensor)
+        return X, Y
 
 
 class DatasetTorch(data.IterableDataset):
@@ -74,13 +70,11 @@ if __name__ == '__main__':
     
     generator = get_liner_generator(5, 7, 1)
     
-    print(generator == iter(generator))
-
     dataset = DatasetTorch(generator)
-
+    
     # for x, y in dataset:
     #     print(x, y)
-
+    
     loader = DataLoader(dataset, batch_size=2)
     for x, y in loader:
         print(x)

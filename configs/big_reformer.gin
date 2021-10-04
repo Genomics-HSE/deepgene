@@ -40,5 +40,5 @@ OrdinalHead.n_class = 32
 #  Testing
 ##########################
 
-test_model.checkpoint_path = %checkpoint_path
+test_model.checkpoint_path = "RM_trained.ckpt"
 test_model.model = @ReformerLabeler()
