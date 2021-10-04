@@ -28,8 +28,8 @@ test/get_liner_generator.num_genomes = 5
 
 DatasetPL.seq_len = %seq_len
 DatasetPL.n_class = 32
-DatasetPL.batch_size = 64
-DatasetPL.num_workers = 0
+DatasetPL.batch_size = 128
+DatasetPL.num_workers = 8
 
 ##########################
 #  Training
@@ -40,7 +40,7 @@ Trainer.default_root_dir = %output
 Trainer.max_epochs = 1
 Trainer.checkpoint_callback = False
 Trainer.logger = False
-Trainer.gpus = 0
+Trainer.gpus = 1
 
 train_model.resume = False
 

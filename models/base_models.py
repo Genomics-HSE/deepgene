@@ -1,4 +1,5 @@
 import torch
+import torch.nn as nn
 from pytorch_lightning import LightningModule
 from os.path import join
 import torch.nn.functional as F
@@ -27,7 +28,7 @@ class CategoricalModel(BaseModel):
     def training_step(self, batch, batch_ix):
         X_batch, y_batch = batch
         logits = self.forward(X_batch)
-        #logits = logits.permute(0, 2, 1)
+        # logits = logits.permute(0, 2, 1)
         loss = self.loss(logits, y_batch)
         self.log("train_loss", loss, on_step=True, on_epoch=True)
         return {'loss': loss}
@@ -80,3 +81,49 @@ class OrdinalModel(BaseModel):
             f = make_coalescent_heatmap("", (Y_pred[j:j + step].T, Y[j:j + step]))
             plt.show()
         return
+
+
+class Predictor(LightningModule):
+    def __init__(self, d_model, dropout, n_class):
+        super().__init__()
+        
+        self.dense1 = nn.Linear(d_model, d_model)
+        self.dropout1 = nn.Dropout(dropout)
+        self.dense2 = nn.Linear(d_model, n_class)
+    
+    def forward(self, X):
+        output = self.dropout1(F.relu(self.dense1(X)))
+        output = self.dense2(output)
+        return output
+
+
+class OrdinalHead(LightningModule):
+    def __init__(self, d_model, n_class):
+        super().__init__()
+        self.n_class = n_class
+        self.dense1 = nn.Linear(d_model, 1, bias=False)
+        self.bias = nn.Parameter(torch.zeros(n_class - 1))
+    
+    def forward(self, X):
+        output = self.dense1(X)
+        output = output + self.bias
+        return output
+
+
+class ConvEmbedding(LightningModule):
+    def __init__(self, in_channels, out_channels, kernel_size, stride):
+        super().__init__()
+        self.conv_emb = nn.Conv1d(
+            in_channels=in_channels,
+            out_channels=out_channels,
+            kernel_size=kernel_size,
+            stride=stride,
+            padding='same'
+        )
+    
+    def forward(self, X):
+        X = X.float()
+        X = X.unsqueeze(1)
+        output = self.conv_emb(X)
+        output = output.permute(0, 2, 1)
+        return output

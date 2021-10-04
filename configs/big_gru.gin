@@ -1,4 +1,4 @@
-include 'configs/config.gin'
+include 'configs/big_config.gin'
 
 checkpoint_path = "output/GRU.ckpt"
 n_class = 32
@@ -17,7 +17,7 @@ Embedding.embedding_dim = %n_class
 
 ConvEmbedding.in_channels = 1
 ConvEmbedding.out_channels = %n_class
-ConvEmbedding.kernel_size = 10
+ConvEmbedding.kernel_size = 11
 ConvEmbedding.stride = 1
 
 
