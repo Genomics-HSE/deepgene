@@ -1,6 +1,7 @@
 import functools
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 import transformers
 from pytorch_lightning import LightningModule
 from models import base_models
