@@ -9,18 +9,17 @@ from models import base_models
 from .losses import KLDivLoss
 
 
-class ReformerLabeler(base_models.BaseModel):
-    def __init__(self, config, predictor, ordinal_head):
+class ReformerLabeler(base_models.CategoricalModel):
+    def __init__(self, config, predictor):
         super().__init__()
         self.reformer = transformers.ReformerModel(config)
         self.predictor = predictor
-        self.ordinal_head = ordinal_head
     
+        self.loss = functools.partial(KLDivLoss, 32)
+        
     def forward(self, X):
         output = self.reformer(X)
-        assert len(output) == 1
         output = self.predictor(output[0])
-        output = self.ordinal_head(output)
         return output
     
     @property
@@ -28,24 +27,18 @@ class ReformerLabeler(base_models.BaseModel):
         return "RM"
 
 
-class ReformerLabeler(base_models.BaseModel):
-    def __init__(self, config, predictor, ordinal_head):
+class ReformerLabelerOrdinal(base_models.OrdinalModel):
+    def __init__(self, reformer_model, ordinal_head):
         super().__init__()
-        self.reformer = transformers.ReformerModel(config)
-        self.predictor = predictor
+        self.reformer_model = reformer_model
         self.ordinal_head = ordinal_head
     
     def forward(self, X):
-        output = self.reformer(X)
+        output = self.reformer_model(X)
         assert len(output) == 1
-        output = self.predictor(output[0])
         output = self.ordinal_head(output)
         return output
     
     @property
     def name(self):
-        return "RM"
-
-
-
-
+        return "RM-ordinal"

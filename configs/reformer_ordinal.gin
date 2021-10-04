@@ -1,0 +1,6 @@
+'configs/reformer.gin'
+
+
+ReformerLabeler.ordinal_head = @OrdinalHead()
+OrdinalHead.d_model = 32
+OrdinalHead.n_class = 32

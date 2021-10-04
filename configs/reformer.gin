@@ -32,10 +32,6 @@ Predictor.d_model = 64
 Predictor.dropout = 0.1
 Predictor.n_class = 32
 
-ReformerLabeler.ordinal_head = @OrdinalHead()
-OrdinalHead.d_model = 32
-OrdinalHead.n_class = 32
-
 ##########################
 #  Testing
 ##########################
