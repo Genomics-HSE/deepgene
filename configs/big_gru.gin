@@ -17,7 +17,7 @@ Embedding.embedding_dim = %n_class
 
 ConvEmbedding.in_channels = 1
 ConvEmbedding.out_channels = %n_class
-ConvEmbedding.kernel_size = 11
+ConvEmbedding.kernel_size = 31
 ConvEmbedding.stride = 1
 
 
