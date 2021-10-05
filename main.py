@@ -1,6 +1,18 @@
+import time
+import signal
 import gin
 import argparse
 from models import train_model, test_model
+
+
+def handler(signum, frame):
+    print('Received signal to end running', signum)
+    raise KeyboardInterrupt
+
+
+signal.signal(signal.SIGUSR1, handler)
+signal.signal(signal.SIGTERM, handler)
+signal.signal(signal.SIGINT, handler)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog='Genomics')
