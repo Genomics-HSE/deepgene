@@ -9,7 +9,7 @@ output = "output"
 
 seq_len = 320
 
-get_liner_generator.num_genomes = 50
+get_liner_generator.num_genomes = 500
 get_liner_generator.genome_length = %seq_len
 get_liner_generator.num_generators = 10
 

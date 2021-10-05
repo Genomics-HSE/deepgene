@@ -5,7 +5,7 @@ import torch.nn.functional as F
 from pytorch_lightning import LightningModule
 from models import base_models
 
-from .losses import KLDivLoss
+from .losses import KLDivLoss, CrossEntropyLoss, EMD_squared_loss
 
 
 class GruLabeler(base_models.CategoricalModel):
@@ -20,8 +20,9 @@ class GruLabeler(base_models.CategoricalModel):
                           dropout=0.1)
         self.predictor = predictor
         
-        # self.loss = nn.CrossEntropyLoss()
-        self.loss = functools.partial(KLDivLoss, n_class)
+        self.loss = functools.partial(EMD_squared_loss, n_class)
+        # self.loss = CrossEntropyLoss
+        # self.loss = functools.partial(KLDivLoss, n_class)
     
     def forward(self, X):
         output = self.embedding(X)

@@ -27,7 +27,6 @@ class CategoricalModel(BaseModel):
     def training_step(self, batch, batch_ix):
         X_batch, y_batch = batch
         logits = self.forward(X_batch)
-        # logits = logits.permute(0, 2, 1)
         loss = self.loss(logits, y_batch)
         self.log("train_loss", loss, on_step=True, on_epoch=True)
         return {'loss': loss}
@@ -40,7 +39,7 @@ class CategoricalModel(BaseModel):
         Y_pred = Y_pred.squeeze(0)
         Y = y_batch.squeeze(0)
         
-        step = 10000
+        step = 32768
         # print(X_batch.squeeze(0))
         for j in range(0, len(Y), step):
             f = make_coalescent_heatmap("", (Y_pred[j:j + step].T, Y[j:j + step]))
