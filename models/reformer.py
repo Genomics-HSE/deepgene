@@ -6,7 +6,7 @@ import transformers
 from pytorch_lightning import LightningModule
 from models import base_models
 
-from .losses import KLDivLoss
+from .losses import CrossEntropyLoss, KLDivLoss, EMD_squared_loss
 
 
 class ReformerLabeler(base_models.CategoricalModel):
@@ -15,7 +15,8 @@ class ReformerLabeler(base_models.CategoricalModel):
         self.reformer = transformers.ReformerModel(config)
         self.predictor = predictor
     
-        self.loss = functools.partial(KLDivLoss, 32)
+        # self.loss = functools.partial(KLDivLoss, 32)
+        self.loss = functools.partial(EMD_squared_loss, 32)
         
     def forward(self, X):
         output = self.reformer(X)

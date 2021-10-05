@@ -11,7 +11,7 @@ seq_len = 320
 
 get_liner_generator.num_genomes = 500
 get_liner_generator.genome_length = %seq_len
-get_liner_generator.num_generators = 20
+get_liner_generator.num_generators = 10
 
 DatasetPL.train_dataset = @train/DatasetTorch()
 train/DatasetTorch.data_generator = @train/get_liner_generator()
@@ -28,7 +28,7 @@ test/get_liner_generator.num_genomes = 5
 
 DatasetPL.seq_len = %seq_len
 DatasetPL.n_class = 32
-DatasetPL.batch_size = 64
+DatasetPL.batch_size = 32
 DatasetPL.num_workers = 0
 
 ##########################
