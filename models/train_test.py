@@ -1,9 +1,11 @@
+from matplotlib import pyplot as plt
 import gin
 import torch
 import torch.nn.functional as F
 from pytorch_lightning import Trainer, LightningModule, LightningDataModule
+from .reformer import ReformerLabeler
+from .gru import GruLabeler
 from .viz import make_coalescent_heatmap
-from matplotlib import pyplot as plt
 
 
 def train_model(trainer: Trainer,
@@ -30,6 +32,6 @@ def test_model(trainer: Trainer,
                datamodule: LightningDataModule,
                ):
     print(checkpoint_path)
-    model = model.load_from_checkpoint(checkpoint_path=checkpoint_path)
+    model = ReformerLabeler.load_from_checkpoint(checkpoint_path=checkpoint_path)
     trainer.test(model=model, datamodule=datamodule)
     return
