@@ -10,7 +10,7 @@ def make_coalescent_heatmap(model_name, averaged_data_tuple, dpi=200):
     im0 = ax.imshow(averaged_data_tuple[0], cmap='Wistia', aspect='auto')
     #ax.plot(torch.sum(averaged_data_tuple[1], dim=1), lw=1, c='black', label="True")
     ax.plot(averaged_data_tuple[1], lw=1, c='black', label="True")
-    ax.plot(torch.sum(averaged_data_tuple[0] > 0.5, dim=0), lw=1, c='green', label="Model")
+    #ax.plot(torch.argmax(averaged_data_tuple[0], dim=0), lw=1, c='green', label="Model")
     
     #ax.plot(np.argmax(averaged_data_tuple[0], axis=0), lw=1, c='black', linestyle="--", label="Model")
     # create an axes on the right side of ax. The width of cax will be 5%

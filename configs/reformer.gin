@@ -10,22 +10,27 @@ train_model.checkpoint_path = %checkpoint_path
 ##########################
 ReformerLabeler.config = @ReformerConfig()
 ReformerConfig.attention_head_size = 32
-ReformerConfig.attn_layers  = ["local", "local", "local"]
+ReformerConfig.attn_layers  = ["lsh", "lsh", "lsh"]
 ReformerConfig.axial_pos_embds_dim = [12, 20]  # sum is equal to hidden_size
 ReformerConfig.axial_pos_shape = [16, 20] # product max_embedding_size [128, 256]
 ReformerConfig.chunk_size_lm_head = 0
 ReformerConfig.eos_token_id = None
 ReformerConfig.feed_forward_size = 32
 ReformerConfig.hidden_size = 32
-ReformerConfig.local_chunk_length = 1000
-ReformerConfig.local_num_chunks_before = 1
-ReformerConfig.local_num_chunks_after = 1
 ReformerConfig.max_position_embeddings = 320
 ReformerConfig.num_attention_heads = 4
 ReformerConfig.use_cache = False
 ReformerConfig.vocab_size = 2
 ReformerConfig.pad_token_id = None
 ReformerConfig.return_dict = False
+
+ReformerConfig.local_chunk_length = 1000
+ReformerConfig.local_num_chunks_before = 1
+ReformerConfig.local_num_chunks_after = 1
+
+ReformerConfig.lsh_attn_chunk_length = 80
+ReformerConfig.lsh_num_chunks_before = 1
+ReformerConfig.lsh_num_chunks_after = 1
 
 ReformerLabeler.predictor = @Predictor()
 Predictor.d_model = 64

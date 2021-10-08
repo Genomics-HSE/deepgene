@@ -25,6 +25,7 @@ DatasetPL.test_dataset = @test/DatasetTorch()
 test/DatasetTorch.data_generator = @test/get_liner_generator()
 test/get_liner_generator.random_seed = 33
 test/get_liner_generator.num_genomes = 5
+test/get_liner_generator.num_generators = 10
 
 DatasetPL.seq_len = %seq_len
 DatasetPL.n_class = 32
