@@ -29,7 +29,6 @@ test/get_liner_generator.num_generators = 10
 
 DatasetPL.seq_len = %seq_len
 DatasetPL.n_class = 32
-DatasetPL.batch_size = 32
 DatasetPL.num_workers = 0
 
 ##########################

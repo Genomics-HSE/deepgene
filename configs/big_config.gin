@@ -29,7 +29,6 @@ test/get_liner_generator.num_genomes = 5
 
 DatasetPL.seq_len = %seq_len
 DatasetPL.n_class = 32
-DatasetPL.batch_size = 128
 DatasetPL.num_workers = 2
 
 ##########################
