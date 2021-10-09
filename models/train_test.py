@@ -32,6 +32,6 @@ def test_model(trainer: Trainer,
                datamodule: LightningDataModule,
                ):
     print(checkpoint_path)
-    model = ReformerLabeler.load_from_checkpoint(checkpoint_path=checkpoint_path)
+    model = model.load_from_checkpoint(checkpoint_path=checkpoint_path)
     trainer.test(model=model, datamodule=datamodule)
     return

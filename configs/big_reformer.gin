@@ -1,6 +1,7 @@
 include 'configs/big_config.gin'
 
 checkpoint_path = "RM.ckpt"
+DatasetPL.batch_size = 64
 
 train_model.model = @ReformerLabeler()
 train_model.checkpoint_path = %checkpoint_path
@@ -10,7 +11,7 @@ train_model.checkpoint_path = %checkpoint_path
 ##########################
 ReformerLabeler.config = @ReformerConfig()
 ReformerConfig.attention_head_size = 16
-ReformerConfig.attn_layers  = ["lsh", "lsh", "lsh", "lsh"]
+ReformerConfig.attn_layers  = ["local", "lsh", "local", "lsh", "local", "lsh"]
 ReformerConfig.axial_pos_embds_dim = [6, 10]  # sum is equal to hidden_size
 ReformerConfig.axial_pos_shape = [128, 256] # product max_embedding_size [128, 256]
 ReformerConfig.chunk_size_lm_head = 0
@@ -24,11 +25,11 @@ ReformerConfig.vocab_size = 2
 ReformerConfig.pad_token_id = None
 ReformerConfig.return_dict = False
 
-ReformerConfig.local_chunk_length = 10000
+ReformerConfig.local_chunk_length = 128
 ReformerConfig.local_num_chunks_before = 1
 ReformerConfig.local_num_chunks_after = 1
 
-ReformerConfig.lsh_attn_chunk_length = 8192
+ReformerConfig.lsh_attn_chunk_length = 128
 ReformerConfig.lsh_num_chunks_before = 1
 ReformerConfig.lsh_num_chunks_after = 1
 
