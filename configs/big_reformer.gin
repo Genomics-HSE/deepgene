@@ -29,7 +29,7 @@ ReformerConfig.local_chunk_length = 10000
 ReformerConfig.local_num_chunks_before = 1
 ReformerConfig.local_num_chunks_after = 1
 
-config.num_hashes = 2
+ReformerConfig.num_hashes = 2
 ReformerConfig.lsh_attn_chunk_length = 128
 ReformerConfig.lsh_num_chunks_before = 1
 ReformerConfig.lsh_num_chunks_after = 1
