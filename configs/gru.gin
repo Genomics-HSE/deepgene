@@ -16,6 +16,7 @@ GruLabeler.embedding = @ConvEmbedding() #Embedding
 Embedding.num_embeddings = 2
 Embedding.embedding_dim = %n_class
 
+ConvEmbedding.n_layers = 4
 ConvEmbedding.in_channels = 1
 ConvEmbedding.out_channels = %n_class
 ConvEmbedding.kernel_size = 11
