@@ -109,19 +109,36 @@ class OrdinalHead(LightningModule):
 
 
 class ConvEmbedding(LightningModule):
-    def __init__(self, in_channels, out_channels, kernel_size, stride):
+    def __init__(self, n_layers, in_channels, out_channels, kernel_size, stride):
         super().__init__()
-        self.conv_emb = nn.Conv1d(
-            in_channels=in_channels,
-            out_channels=out_channels,
-            kernel_size=kernel_size,
-            stride=stride,
-            padding='same'
+        conv_embeds = [
+            nn.Conv1d(
+                in_channels=in_channels,
+                out_channels=out_channels,
+                kernel_size=kernel_size,
+                stride=stride,
+                padding='same'
+            )
+        ]
+        
+        conv_embeds.extend(
+            [nn.Conv1d(
+                    in_channels=out_channels,
+                    out_channels=out_channels,
+                    kernel_size=kernel_size,
+                    stride=stride,
+                    padding='same'
+                ) for _ in range(n_layers - 1)]
         )
+        
+        self.conv_embeds = nn.ModuleList(conv_embeds)
     
     def forward(self, X):
-        X = X.float()
-        X = X.unsqueeze(1)
-        output = self.conv_emb(X)
+        output = X.float()
+        output = output.unsqueeze(1)
+        
+        for layer in self.conv_embeds:
+            output = layer(output)
+        
         output = output.permute(0, 2, 1)
         return output

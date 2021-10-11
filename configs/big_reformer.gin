@@ -9,6 +9,13 @@ train_model.checkpoint_path = %checkpoint_path
 ##########################
 #  Model
 ##########################
+ReformerLabeler.embedding = @ConvEmbedding()
+ConvEmbedding.n_layers = 4
+ConvEmbedding.in_channels = 1
+ConvEmbedding.out_channels = 16
+ConvEmbedding.kernel_size = 21
+ConvEmbedding.stride = 1
+
 ReformerLabeler.config = @ReformerConfig()
 ReformerConfig.attention_head_size = 16
 ReformerConfig.attn_layers  = ["local", "lsh", "local", "lsh", "local", "lsh"]

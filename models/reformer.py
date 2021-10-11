@@ -10,8 +10,9 @@ from .losses import CrossEntropyLoss, KLDivLoss, EMD_squared_loss
 
 
 class ReformerLabeler(base_models.CategoricalModel):
-    def __init__(self, config, predictor):
+    def __init__(self, embedding, config, predictor):
         super().__init__()
+        self.embedding = embedding
         self.reformer = transformers.ReformerModel(config)
         self.predictor = predictor
     
@@ -19,7 +20,11 @@ class ReformerLabeler(base_models.CategoricalModel):
         self.loss = functools.partial(EMD_squared_loss, 32)
         
     def forward(self, X):
-        output = self.reformer(X)
+        output = self.embedding(X)
+        output = self.reformer(
+            input_ids=None,
+            inputs_embeds=output
+        )
         output = self.predictor(output[0])
         return output
     
