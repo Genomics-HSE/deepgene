@@ -10,6 +10,8 @@ train_model.checkpoint_path = %checkpoint_path
 ##########################
 #  Model
 ##########################
+GruLabeler.device = 'cpu'
+
 #GruLabeler.embedding = @ConvEmbedding() #Embedding
 GruLabeler.embedding = @Embedding()
 

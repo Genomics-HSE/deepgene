@@ -44,8 +44,8 @@ def CTC_loss(y_pred, y_true):
     return loss
 
 
-def MYLOSS(n_class):
-    D = torch.full(size=(n_class, n_class), fill_value=0).float()
+def MYLOSS(n_class, device):
+    D = torch.full(size=(n_class, n_class), fill_value=0, device=device).float()
     
     for i in range(n_class):
         for j in range(n_class):
