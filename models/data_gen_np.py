@@ -324,7 +324,7 @@ if __name__ == "__main__":
     for j in range(num_model):
         generator = DataGenerator(
             demographic_events=generate_demographic_events_complex(),
-            splitter=exponent_split,
+            splitter=simple_split,
             num_replicates=int(sys.argv[2])
         )
         generator.run_simulation()

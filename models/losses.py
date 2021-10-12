@@ -1,3 +1,4 @@
+import math
 import torch
 import torch.nn.functional as F
 
@@ -53,13 +54,17 @@ def MYLOSS(n_class, device):
                 continue
             D[i][j] = torch.exp(torch.tensor((abs(i - j))))
     
+    D = F.softmax(D, dim=-1)
+    print(D)
     def emd_loss(y_pred, y_true):
         y_pred = F.softmax(y_pred, dim=-1)
         
-        mul = torch.square(y_pred) * F.embedding(input=y_true, weight=D)
-        loss = torch.sum(mul, dim=-1)
-        loss = torch.sum(loss)
+        emd2_loss = torch.square(y_pred) * F.embedding(input=y_true, weight=D)
+        emd2_loss = torch.sum(emd2_loss, dim=-1)
+        emd2_loss = torch.mean(emd2_loss)
         
-        return loss
+        cross_loss = F.nll_loss(y_pred.permute(0, 2, 1), y_true)
+        
+        return cross_loss + emd2_loss
     
     return emd_loss

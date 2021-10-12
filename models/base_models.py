@@ -12,7 +12,7 @@ class BaseModel(LightningModule):
         super().__init__()
     
     def configure_optimizers(self):
-        optimizer = torch.optim.Adam(self.parameters(), lr=0.001)
+        optimizer = torch.optim.Adam(self.parameters(), lr=1e-3, weight_decay=1e-4)
         return optimizer
     
     def save(self, trainer, checkpoint_path):

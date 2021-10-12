@@ -20,9 +20,9 @@ class GruLabeler(base_models.CategoricalModel):
                           dropout=0.1)
         self.predictor = predictor
         
-        self.loss = MYLOSS(n_class, device)
+        # self.loss = MYLOSS(n_class, device)
         # self.loss = functools.partial(EMD_squared_loss, n_class)
-        # self.loss = CrossEntropyLoss
+        self.loss = CrossEntropyLoss
         # self.loss = functools.partial(KLDivLoss, n_class)
     
     def forward(self, X):
