@@ -42,3 +42,24 @@ def CTC_loss(y_pred, y_true):
         blank=None,
     )
     return loss
+
+
+def MYLOSS(n_class):
+    D = torch.full(size=(n_class, n_class), fill_value=0).float()
+    
+    for i in range(n_class):
+        for j in range(n_class):
+            if i == j:
+                continue
+            D[i][j] = torch.exp(torch.tensor((abs(i - j))))
+    
+    def emd_loss(y_pred, y_true):
+        y_pred = F.softmax(y_pred, dim=-1)
+        
+        mul = torch.square(y_pred) * F.embedding(input=y_true, weight=D)
+        loss = torch.sum(mul, dim=-1)
+        loss = torch.sum(loss)
+        
+        return loss
+    
+    return emd_loss

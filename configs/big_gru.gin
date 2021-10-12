@@ -10,8 +10,8 @@ train_model.checkpoint_path = %checkpoint_path
 ##########################
 #  Model
 ##########################
-GruLabeler.embedding = @ConvEmbedding() #Embedding
-#GruLabeler.embedding = @Embedding()
+#GruLabeler.embedding = @ConvEmbedding() #Embedding
+GruLabeler.embedding = @Embedding()
 
 Embedding.num_embeddings = 2
 Embedding.embedding_dim = %n_class
@@ -25,7 +25,7 @@ ConvEmbedding.stride = 1
 
 GruLabeler.n_class = %n_class
 GruLabeler.hidden_size = %n_class
-GruLabeler.num_layers = 8
+GruLabeler.num_layers = 4
 
 GruLabeler.predictor = @Predictor()
 Predictor.d_model = 64

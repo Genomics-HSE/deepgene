@@ -10,8 +10,8 @@ train_model.checkpoint_path = %checkpoint_path
 ##########################
 #  Model
 ##########################
-GruLabeler.embedding = @ConvEmbedding() #Embedding
-#GruLabeler.embedding = @Embedding()
+#GruLabeler.embedding = @ConvEmbedding() #Embedding
+GruLabeler.embedding = @Embedding()
 
 Embedding.num_embeddings = 2
 Embedding.embedding_dim = %n_class
