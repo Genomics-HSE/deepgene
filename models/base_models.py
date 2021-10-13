@@ -87,11 +87,14 @@ class Predictor(LightningModule):
         
         self.dense1 = nn.Linear(d_model, d_model)
         self.dropout1 = nn.Dropout(dropout)
-        self.dense2 = nn.Linear(d_model, n_class)
+        self.dense2 = nn.Linear(d_model, d_model)
+        self.dropout2 = nn.Dropout(dropout)
+        self.dense3 = nn.Linear(d_model, n_class)
     
     def forward(self, X):
         output = self.dropout1(F.relu(self.dense1(X)))
-        output = self.dense2(output)
+        output = self.dropout2(F.relu(self.dense2(output)))
+        output = self.dense3(output)
         return output
 
 
