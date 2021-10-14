@@ -94,7 +94,7 @@ class Predictor(LightningModule):
     def forward(self, X):
         output = self.dropout1(F.relu(self.dense1(X)))
         output = self.dropout2(F.relu(self.dense2(output)))
-        output = torch.log_softmax(self.dense3(output), dim=-1)
+        output = self.dense3(output)
         return output
 
 
