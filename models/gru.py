@@ -17,13 +17,14 @@ class GruLabeler(base_models.CategoricalModel):
                           hidden_size=hidden_size,
                           num_layers=num_layers,
                           bidirectional=True,
+                          batch_first=True,
                           dropout=0.1)
         self.predictor = predictor
         
         # self.loss = MYLOSS(n_class, device)
         # self.loss = functools.partial(EMD_squared_loss, n_class)
-        # self.loss = CrossEntropyLoss
-        self.loss = functools.partial(KLDivLoss, n_class)
+        self.loss = CrossEntropyLoss
+        #self.loss = functools.partial(KLDivLoss, n_class)
     
     def forward(self, X):
         X = self.embedding(X)
