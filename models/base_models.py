@@ -38,13 +38,12 @@ class CategoricalModel(BaseModel):
         Y_pred = F.softmax(logits, dim=-1)
         Y_pred = Y_pred.squeeze(0)
         Y = y_batch.squeeze(0)
-        
         step = 32768
         # print(X_batch.squeeze(0))
         for j in range(0, len(Y), step):
             f = make_coalescent_heatmap("", (Y_pred[j:j + step].T, Y[j:j + step]))
             plt.show()
-        return
+        return Y_pred
 
 
 class OrdinalModel(BaseModel):
@@ -145,3 +144,11 @@ class ConvEmbedding(LightningModule):
         
         output = output.permute(0, 2, 1)
         return output
+
+
+class NoEmbedding(LightningModule):
+    def __init__(self):
+        super(NoEmbedding, self).__init__()
+    
+    def forward(self, X):
+        return X.unsqueeze(2).float()

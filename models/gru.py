@@ -9,11 +9,11 @@ from .losses import KLDivLoss, CrossEntropyLoss, EMD_squared_loss, CTC_loss, MYL
 
 
 class GruLabeler(base_models.CategoricalModel):
-    def __init__(self, embedding, n_class, hidden_size, num_layers, predictor, device):
+    def __init__(self, embedding, n_class, input_size, hidden_size, num_layers, predictor, device):
         super().__init__()
         self.n_class = n_class
         self.embedding = embedding
-        self.gru = nn.GRU(input_size=hidden_size,
+        self.gru = nn.GRU(input_size=input_size,
                           hidden_size=hidden_size,
                           num_layers=num_layers,
                           bidirectional=True,
@@ -26,8 +26,8 @@ class GruLabeler(base_models.CategoricalModel):
         self.loss = functools.partial(KLDivLoss, n_class)
     
     def forward(self, X):
-        output = self.embedding(X)
-        output, _ = self.gru(output)
+        X = self.embedding(X)
+        output, _ = self.gru(X)
         output = self.predictor(output)
         return output
     

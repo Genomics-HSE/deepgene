@@ -7,6 +7,7 @@ from transformers import ReformerConfig
 Trainer = gin.external_configurable(Trainer)
 ReformerConfig = gin.external_configurable(ReformerConfig)
 
+NoEmbedding = gin.external_configurable(base_models.NoEmbedding)
 Embedding = gin.external_configurable(nn.Embedding)
 ConvEmbedding = gin.external_configurable(base_models.ConvEmbedding)
 
