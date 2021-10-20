@@ -10,6 +10,10 @@ train_model.checkpoint_path = %checkpoint_path
 #  Model
 ##########################
 ReformerLabeler.embedding = @ConvEmbedding()
+
+Embedding.num_embeddings = 2
+Embedding.embedding_dim = 32
+
 ConvEmbedding.n_layers = 4
 ConvEmbedding.in_channels = 1
 ConvEmbedding.out_channels = 32
