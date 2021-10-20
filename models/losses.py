@@ -20,8 +20,22 @@ def CrossEntropyLoss(y_pred, y_true):
 def EMD_squared_loss(n_class, y_pred, y_true):
     y_pred = F.softmax(y_pred, dim=-1)
     y_true = F.one_hot(y_true, n_class).float()
-    output = torch.mean(torch.square(torch.cumsum(y_pred, dim=-1) - torch.cumsum(y_true, dim=-1)))
+    output = torch.mean(
+        torch.sum(
+            torch.square(
+                torch.cumsum(y_pred, dim=-1) - torch.cumsum(y_true, dim=-1)
+            ), dim=-1)
+    )
     return output
+
+
+def CEandEMD(n_class, y_pred, y_true):
+    y_pred_ce = y_pred.permute(0, 2, 1)
+    loss_ce = F.cross_entropy(y_pred_ce, y_true)
+    y_pred = F.softmax(y_pred, dim=-1)
+    y_true = F.one_hot(y_true, n_class).float()
+    loss_emd = torch.mean(torch.square(torch.cumsum(y_pred, dim=-1) - torch.cumsum(y_true, dim=-1)))
+    return loss_ce + loss_emd
 
 
 def CTC_loss(y_pred, y_true):

@@ -1,7 +1,7 @@
 include 'configs/big_config.gin'
 
 checkpoint_path = "RM.ckpt"
-DatasetPL.batch_size = 32
+DatasetPL.batch_size = 16
 
 train_model.model = @ReformerLabeler()
 train_model.checkpoint_path = %checkpoint_path
