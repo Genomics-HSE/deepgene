@@ -17,16 +17,17 @@ class ReformerLabeler(base_models.CategoricalModel):
         self.predictor = predictor
     
         # self.loss = functools.partial(KLDivLoss, 32)
-        self.loss = functools.partial(EMD_squared_loss, 32)
-        
+        # self.loss = functools.partial(EMD_squared_loss, 32)
+        self.loss = CrossEntropyLoss
+
     def forward(self, X):
-        output = self.embedding(X)
-        output = self.reformer(
-            input_ids=None,
-            inputs_embeds=output
-        )
-        output = self.predictor(output[0])
-        return output
+            output = self.embedding(X)
+            output = self.reformer(
+                input_ids=None,
+                inputs_embeds=output
+            )
+            output = self.predictor(output[0])
+            return output
     
     @property
     def name(self):
