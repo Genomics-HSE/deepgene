@@ -39,7 +39,6 @@ class WindowSlider(LightningModule):
         X = X.float()
         out = []
         for window_size in self.windows:
-            print(window_size)
             pad = int((window_size - 1) / 2)
             X_temp = F.pad(X, pad=(pad, pad), value=0)
             X_temp = X_temp.unfold(dimension=-1, size=window_size, step=1)
