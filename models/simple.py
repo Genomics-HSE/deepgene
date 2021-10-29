@@ -17,13 +17,14 @@ class SimpleLabeler(base_models.CategoricalModel):
         self.linear = nn.Linear(len(slider.windows), n_class)
         self.predictor = predictor
         
-        self.loss = CrossEntropyLoss
-    
+        #self.loss = CrossEntropyLoss
+        self.loss = functools.partial(EMD_squared_loss, n_class)
+
     def forward(self, X):
-        output = self.slider(X)
-        output = self.linear(output)
-        output = self.predictor(output)
-        return output
+            output = self.slider(X)
+            output = self.linear(output)
+            output = self.predictor(output)
+            return output
     
     @property
     def name(self):
