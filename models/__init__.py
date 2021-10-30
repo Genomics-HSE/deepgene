@@ -15,6 +15,8 @@ SimpleLabeler = gin.external_configurable(simple.SimpleLabeler)
 WindowSlider = gin.external_configurable(simple.WindowSlider)
 
 ReformerLabeler = gin.external_configurable(reformer.ReformerLabeler)
+ReformerPreTrainerLM = gin.external_configurable(reformer.ReformerPreTrainerLM)
+
 GruLabeler = gin.external_configurable(gru.GruLabeler)
 GruLabelerOrdinal = gin.external_configurable(gru.GruLabelerOrdinal)
 Predictor = gin.external_configurable(base_models.Predictor)

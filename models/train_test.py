@@ -14,12 +14,12 @@ def train_model(trainer: Trainer,
                 checkpoint_path: str,
                 resume: bool
                 ):
-    if resume:
-        trainer = Trainer(resume_from_checkpoint=checkpoint_path)
-    
     print("Running {}-model...".format(model.name))
     
-    trainer.fit(model=model, datamodule=data_module)
+    if resume:
+        trainer.fit(model=model, datamodule=data_module)
+    else:
+        trainer.fit(model=model, datamodule=data_module)
     model.save(trainer, checkpoint_path)
     
     return trainer, model
