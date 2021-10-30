@@ -1,17 +1,18 @@
 include 'configs/big_config.gin'
 
-checkpoint_path = "RM.ckpt"
+checkpoint_path = "output/RM.ckpt"
 DatasetPL.batch_size = 16
 
-train_model.model = @ReformerLabeler()
+train_model.model = @ReformerPreTrainerLM()
 train_model.checkpoint_path = %checkpoint_path
 
 ##########################
 #  Model
 ##########################
 ReformerLabeler.embedding = @Embedding()
+ReformerPreTrainerLM.embedding = @Embedding()
 
-Embedding.num_embeddings = 2
+Embedding.num_embeddings = 3
 Embedding.embedding_dim = 16
 
 ConvEmbedding.n_layers = 4
@@ -21,6 +22,8 @@ ConvEmbedding.kernel_size = 21
 ConvEmbedding.stride = 1
 
 ReformerLabeler.config = @ReformerConfig()
+ReformerPreTrainerLM.config = @ReformerConfig()
+
 ReformerConfig.attention_head_size = 16
 ReformerConfig.attn_layers  = ["local", "lsh", "local", "lsh", "local", "lsh"]
 ReformerConfig.axial_pos_embds_dim = [6, 10]  # sum is equal to hidden_size
