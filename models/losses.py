@@ -11,9 +11,9 @@ def KLDivLoss(n_class, y_pred, y_true):
     return loss
 
 
-def CrossEntropyLoss(y_pred, y_true):
+def CrossEntropyLoss(y_pred, y_true, weight=None):
     y_pred = y_pred.permute(0, 2, 1)
-    output = F.cross_entropy(y_pred, y_true)
+    output = F.cross_entropy(y_pred, y_true, weight=weight)
     return output
 
 

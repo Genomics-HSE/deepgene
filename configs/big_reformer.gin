@@ -2,6 +2,7 @@ include 'configs/big_config.gin'
 
 checkpoint_path = "output/RM.ckpt"
 DatasetPL.batch_size = 16
+Trainer.resume_from_checkpoint = %checkpoint_path
 
 train_model.model = @ReformerPreTrainerLM()
 train_model.checkpoint_path = %checkpoint_path

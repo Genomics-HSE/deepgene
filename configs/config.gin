@@ -7,11 +7,11 @@ output = "output"
 #  Data
 ##########################
 
-seq_len = 3000
+seq_len = 320
 
-get_liner_generator.num_genomes = 500
+get_liner_generator.num_genomes = 10
 get_liner_generator.genome_length = %seq_len
-get_liner_generator.num_generators = 100
+get_liner_generator.num_generators = 10
 
 DatasetPL.train_dataset = @train/DatasetTorch()
 train/DatasetTorch.data_generator = @train/get_liner_generator()
@@ -42,7 +42,7 @@ Trainer.checkpoint_callback = False
 Trainer.logger = False
 Trainer.gpus = 0
 
-train_model.resume = False
+train_model.resume = True
 
 ##########################
 #  Testing
