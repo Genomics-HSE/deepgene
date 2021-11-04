@@ -14,6 +14,7 @@ ConvEmbedding = gin.external_configurable(base_models.ConvEmbedding)
 SimpleLabeler = gin.external_configurable(simple.SimpleLabeler)
 WindowSlider = gin.external_configurable(simple.WindowSlider)
 
+RMExapmle = gin.external_configurable(reformer.RMExapmle)
 ReformerLabeler = gin.external_configurable(reformer.ReformerLabeler)
 ReformerPreTrainerLM = gin.external_configurable(reformer.ReformerPreTrainerLM)
 

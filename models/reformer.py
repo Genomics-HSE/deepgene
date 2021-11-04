@@ -6,14 +6,13 @@ import transformers
 from pytorch_lightning import LightningModule
 from models import base_models
 
-from .losses import CrossEntropyLoss, KLDivLoss, EMD_squared_loss
+from .losses import CrossEntropyLoss, KLDivLoss, EMD_squared_loss, FocalLoss
 
 
-class ReformerLabeler(base_models.CategoricalModel):
+class ReformerLabeler(transformers.ReformerModel, base_models.CategoricalModel):
     def __init__(self, embedding, config, predictor):
-        super().__init__()
+        super().__init__(config=config)
         self.embedding = embedding
-        self.reformer = transformers.ReformerModel(config)
         self.predictor = predictor
         
         # self.loss = functools.partial(KLDivLoss, 32)
@@ -22,7 +21,7 @@ class ReformerLabeler(base_models.CategoricalModel):
     
     def forward(self, X):
         output = self.embedding(X)
-        output = self.reformer(
+        output = super().forward(
             input_ids=None,
             inputs_embeds=output
         )
@@ -34,23 +33,28 @@ class ReformerLabeler(base_models.CategoricalModel):
         return "RM"
 
 
-class ReformerPreTrainerLM(base_models.MLMTrainer):
+class ReformerPreTrainerLM(transformers.ReformerForMaskedLM, base_models.BaseModel):
     def __init__(self, embedding, config):
-        super(ReformerPreTrainerLM, self).__init__()
+        super(ReformerPreTrainerLM, self).__init__(config=config)
         self.masking = Masking(value=2, prob=0.15)
         self.embedding = embedding
-        self.reformer_lm = transformers.ReformerForMaskedLM(config)
         
-        self.loss = CrossEntropyLoss
+        self.loss = FocalLoss(gamma=2, alpha=0.002)
     
     def forward(self, X):
         output = self.masking(X)
         output = self.embedding(output)
-        output = self.reformer_lm(
-            input_ids=None,
-            inputs_embeds=output
-        )
+        output = super().forward(input_ids=None,
+                                 inputs_embeds=output)
         return output[0]
+    
+    def training_step(self, batch, batch_ix):
+        X_batch, _ = batch
+        labels = torch.clone(X_batch)
+        logits = self.forward(X_batch)
+        loss = self.loss(logits, labels)
+        self.log("train_loss", loss, on_step=True, on_epoch=True)
+        return {'loss': loss}
     
     @property
     def name(self):
@@ -67,7 +71,7 @@ class Masking(LightningModule):
         rand = torch.rand(X.shape)
         # where the random array is less than 0.15, we set true
         mask_arr = rand < self.prob
-
+        
         selection = []
         for i in range(X.shape[0]):
             selection.append(
@@ -75,8 +79,19 @@ class Masking(LightningModule):
             )
         for i in range(X.shape[0]):
             X[i, selection[i]] = self.value
-    
+        
         return X
+
+
+class RMExapmle(LightningModule):
+    def __init__(self, cpth_path):
+        super(RMExapmle, self).__init__()
+        
+        weights = torch.load(cpth_path)
+        
+        kotok = transformers.ReformerModel.from_pretrained(state_dict=weights)
+        
+        print(kotok)
 
 
 class ReformerLabelerOrdinal(base_models.OrdinalModel):

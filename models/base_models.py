@@ -46,19 +46,6 @@ class CategoricalModel(BaseModel):
         return Y_pred
 
 
-class MLMTrainer(BaseModel):
-    def __init__(self):
-        super(MLMTrainer, self).__init__()
-    
-    def training_step(self, batch, batch_ix):
-        X_batch, _ = batch
-        labels = torch.clone(X_batch)
-        logits = self.forward(X_batch)
-        loss = self.loss(logits, labels, weight=torch.FloatTensor([1, 0.005]))
-        self.log("train_loss", loss, on_step=True, on_epoch=True)
-        return {'loss': loss}
-
-
 class OrdinalModel(BaseModel):
     def __init__(self):
         super(OrdinalModel, self).__init__()

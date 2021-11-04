@@ -1,6 +1,6 @@
 include 'configs/config.gin'
 
-checkpoint_path = "output/RM.ckpt"
+checkpoint_path = "output/RM-pretrained"
 DatasetPL.batch_size = 8
 
 train_model.model = @ReformerPreTrainerLM()
@@ -58,4 +58,4 @@ Predictor.n_class = 32
 ##########################
 
 test_model.checkpoint_path = "output/RM.ckpt"
-test_model.model = @ReformerLabeler()
+test_model.model = @ReformerPreTrainerLM()
