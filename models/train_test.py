@@ -8,15 +8,20 @@ from .reformer import ReformerLabeler
 from .gru import GruLabeler
 from .viz import make_coalescent_heatmap
 import transformers
+from models import ReformerLabeler
 
 
 def train_model(trainer: Trainer,
                 model: LightningModule,
                 data_module: LightningDataModule,
                 checkpoint_path: str,
+                pretrained_path: str,
                 resume: bool
                 ):
     print("Running {}-model...".format(model.name))
+    
+    if isinstance(model, ReformerLabeler):
+        model = model.from_pretrained(pretrained_path)
     
     if resume:
         trainer.fit(model=model, datamodule=data_module)
