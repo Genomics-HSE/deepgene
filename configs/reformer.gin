@@ -2,9 +2,13 @@ include 'configs/config.gin'
 
 checkpoint_path = "output/RM-pretrained"
 DatasetPL.batch_size = 8
+Trainer.resume_from_checkpoint = None
 
-train_model.model = @ReformerPreTrainerLM()
+#train_model.model = @ReformerPreTrainerLM()
+train_model.model = @ReformerLabeler()
 train_model.checkpoint_path = %checkpoint_path
+
+train_model.pretrained_path = "output/RM-pretrained" # !!
 
 ##########################
 #  Model

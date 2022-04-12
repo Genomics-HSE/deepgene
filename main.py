@@ -2,7 +2,7 @@ import time
 import signal
 import gin
 import argparse
-from models import train_model, test_model
+from deepgen.utils import train_model, test_model
 
 
 def handler(signum, frame):
@@ -24,6 +24,7 @@ if __name__ == '__main__':
     predict_parser.add_argument('--path', type=str)
     args = parser.parse_args()
     
+    print(args.config)
     gin.parse_config_file(args.config)
     
     if args.action == "train":

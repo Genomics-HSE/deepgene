@@ -2,23 +2,37 @@ import math
 import torch
 import torch.nn.functional as F
 from torch.autograd import Variable
+from torchtyping import TensorType, patch_typeguard
+from typeguard import typechecked
+
+patch_typeguard()
 
 
-def KLDivLoss(n_class, y_pred, y_true):
+@typechecked
+def KLDivLoss(n_class: int,
+              y_pred: TensorType["batch", "genome_length", "hidden_size"],
+              y_true: TensorType["batch", "genome_length"]):
     assert len(y_true.shape) == 2
     y_pred = F.log_softmax(y_pred, dim=-1)
+    y_true = y_true.long()
     y_true = F.one_hot(y_true, n_class).float()
     loss = F.kl_div(y_pred, y_true, reduction='batchmean')
     return loss
 
 
-def CrossEntropyLoss(y_pred, y_true, weight=None):
+@typechecked
+def CrossEntropyLoss(y_pred: TensorType["batch", "genome_length", "hidden_size"],
+                     y_true: TensorType["batch", "genome_length"],
+                     weight=None):
     y_pred = y_pred.permute(0, 2, 1)
     output = F.cross_entropy(y_pred, y_true, weight=weight)
     return output
 
 
-def EMD_squared_loss(n_class, y_pred, y_true):
+@typechecked
+def EMD_squared_loss(n_class: int,
+                     y_pred: TensorType["batch", "genome_length", "hidden_size"],
+                     y_true: TensorType["batch", "genome_length"]):
     y_pred = F.softmax(y_pred, dim=-1)
     y_true = F.one_hot(y_true, n_class).float()
     output = torch.mean(
@@ -30,7 +44,10 @@ def EMD_squared_loss(n_class, y_pred, y_true):
     return output
 
 
-def CEandEMD(n_class, y_pred, y_true):
+@typechecked
+def CEandEMD(n_class: int,
+             y_pred: TensorType["batch", "genome_length", "hidden_size"],
+             y_true: TensorType["batch", "genome_length"]):
     y_pred_ce = y_pred.permute(0, 2, 1)
     loss_ce = F.cross_entropy(y_pred_ce, y_true)
     y_pred = F.softmax(y_pred, dim=-1)
@@ -39,7 +56,9 @@ def CEandEMD(n_class, y_pred, y_true):
     return loss_ce + loss_emd
 
 
-def CTC_loss(y_pred, y_true):
+@typechecked
+def CTC_loss(y_pred: TensorType["batch", "genome_length", "hidden_size"],
+             y_true: TensorType["batch", "genome_length"]):
     """
     y_pred -- (batch_size, seq_len, dim)
     Log_probs: Tensor of size  (T,N,C)

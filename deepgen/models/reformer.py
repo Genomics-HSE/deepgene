@@ -4,14 +4,17 @@ import torch.nn as nn
 import torch.nn.functional as F
 import transformers
 from pytorch_lightning import LightningModule
-from models import base_models
+from .base_models import CategoricalModel, OrdinalModel
 
-from .losses import CrossEntropyLoss, KLDivLoss, EMD_squared_loss, FocalLoss
+from deepgen.loss import CrossEntropyLoss, KLDivLoss, EMD_squared_loss, FocalLoss
 
 
-class ReformerLabeler(transformers.ReformerModel, base_models.CategoricalModel):
+class ReformerLabeler(transformers.ReformerModel, CategoricalModel):
     def __init__(self, embedding, config, predictor):
         super().__init__(config=config)
+        print(type(embedding))
+        print(type(config))
+        print(type(predictor))
         self.embedding = embedding
         self.predictor = predictor
         
@@ -33,7 +36,7 @@ class ReformerLabeler(transformers.ReformerModel, base_models.CategoricalModel):
         return "RM"
 
 
-class ReformerPreTrainerLM(transformers.ReformerForMaskedLM, base_models.BaseModel):
+class ReformerPreTrainerLM(transformers.ReformerForMaskedLM):
     def __init__(self, embedding, config):
         super(ReformerPreTrainerLM, self).__init__(config=config)
         self.masking = Masking(value=2, prob=0.15)
@@ -83,18 +86,7 @@ class Masking(LightningModule):
         return X
 
 
-class RMExapmle(LightningModule):
-    def __init__(self, cpth_path):
-        super(RMExapmle, self).__init__()
-        
-        weights = torch.load(cpth_path)
-        
-        kotok = transformers.ReformerModel.from_pretrained(state_dict=weights)
-        
-        print(kotok)
-
-
-class ReformerLabelerOrdinal(base_models.OrdinalModel):
+class ReformerLabelerOrdinal(OrdinalModel):
     def __init__(self, reformer_model, ordinal_head):
         super().__init__()
         self.reformer_model = reformer_model

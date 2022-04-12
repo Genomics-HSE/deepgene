@@ -143,6 +143,8 @@ class DataGenerator():
                  model: str = "hudson",
                  random_seed: int = 42,
                  sample_size: int = 1,
+                 return_local_times: bool = True,
+                 return_full_dist: bool = True,
                  ):
         
         self.sample_size = sample_size
@@ -163,6 +165,9 @@ class DataGenerator():
         self.random_seed = random_seed
         self.number_intervals = number_intervals
         self._data = None
+
+        self.return_local_times = return_local_times
+        self.return_full_dist = return_full_dist
     
     def run_simulation(self):
         """
@@ -216,7 +221,13 @@ class DataGenerator():
             prior_dist[self.splitter(
                 time, self.number_intervals)] += (int(right - left)) / self.len
         
-        return mutations, d_times #, prior_dist
+        if self.return_local_times and self.return_full_dist:
+            return mutations, d_times, prior_dist
+        elif self.return_local_times and not self.return_full_dist:
+            return mutations, d_times
+        elif self.return_full_dist and not self.return_local_times:
+            return mutations, prior_dist
+        return None
 
 
 def get_generator(num_genomes: int,
@@ -254,11 +265,15 @@ def get_list(num_genomes: int,
 def get_liner_generator(num_genomes: int,
                         genome_length: int,
                         num_generators: int = 1,
-                        random_seed: int = 42) -> 'Generator':
+                        random_seed: int = 42,
+                        return_local_times: bool = True,
+                        return_full_dist: bool = True) -> 'Generator':
     generators = [DataGenerator(num_replicates=num_genomes,
                                 lengt=genome_length,
                                 demographic_events=generate_demographic_events(),
                                 random_seed=random_seed + i,
+                                return_local_times=return_local_times,
+                                return_full_dist=return_full_dist
                                 ) for i in range(num_generators)]
     generators = shuffle(generators, random_state=random_seed)
     

@@ -3,12 +3,12 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from pytorch_lightning import LightningModule
-from models import base_models
+from .base_models import CategoricalModel, OrdinalModel
 
-from .losses import KLDivLoss, CrossEntropyLoss, EMD_squared_loss, CTC_loss, MYLOSS
+from deepgen.loss import KLDivLoss, CrossEntropyLoss, EMD_squared_loss, CTC_loss, MYLOSS
 
 
-class SimpleLabeler(base_models.CategoricalModel):
+class SimpleLabeler(CategoricalModel):
     def __init__(self, n_class, slider, predictor):
         super().__init__()
         self.n_class = n_class

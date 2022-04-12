@@ -9,47 +9,44 @@ from torch.utils import data
 from torch.utils.data import DataLoader
 
 
-class DatasetPL(pl.LightningDataModule):
+class DatasetXY(pl.LightningDataModule):
     def __init__(self,
-                 train_dataset,
-                 val_dataset,
-                 test_dataset,
-                 seq_len: int,
-                 n_class: int,
+                 train_generator,
+                 val_generator,
+                 test_generator,
                  batch_size: int,
                  num_workers: int
                  ):
-        super(DatasetPL, self).__init__()
+        super(DatasetXY, self).__init__()
         
-        self.seq_len = seq_len
-        self.n_class = n_class
         self.batch_size = batch_size
         self.num_workers = num_workers
         
-        self.train_dataset = train_dataset
-        self.val_dataset = val_dataset
-        self.test_dataset = test_dataset
+        self.train_dataset = DatasetTorch(train_generator)
+        self.val_dataset = DatasetTorch(val_generator)
+        self.test_dataset = DatasetTorch(test_generator)
     
     def train_dataloader(self, *args, **kwargs) -> DataLoader:
         return DataLoader(self.train_dataset,
-                          collate_fn=self.genomes_collate,
+                          collate_fn=default_collate,
                           batch_size=self.batch_size,
                           num_workers=self.num_workers,
                           )
     
     def test_dataloader(self, *args, **kwargs) -> Union[DataLoader, List[DataLoader]]:
         return DataLoader(self.test_dataset,
-                          collate_fn=self.genomes_collate,
+                          collate_fn=default_collate,
                           batch_size=1,
                           num_workers=self.num_workers,
                           )
     
-    def genomes_collate(self, batch):
-        X = [item[0] for item in batch]
-        Y = [item[1] for item in batch]
-        X = torch.LongTensor(X)
-        Y = torch.LongTensor(Y)
-        return X, Y
+
+def default_collate(batch):
+    X = [torch.Tensor(item[0]) for item in batch]
+    Y = [torch.Tensor(item[1]) for item in batch]
+    X = torch.stack(X, dim=0)
+    Y = torch.stack(Y, dim=0)
+    return X, Y
 
 
 class DatasetTorch(data.IterableDataset):

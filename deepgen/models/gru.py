@@ -1,15 +1,26 @@
 import functools
+from typing import Union
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from pytorch_lightning import LightningModule
-from models import base_models
+from torchtyping import TensorType, patch_typeguard
+from typeguard import typechecked
 
-from .losses import KLDivLoss, CrossEntropyLoss, EMD_squared_loss, CTC_loss, MYLOSS
+from .base_models import CategoricalModel, OrdinalModel, ConvEmbedding, NoEmbedding, Predictor
+from deepgen.loss import KLDivLoss, CrossEntropyLoss, EMD_squared_loss, CTC_loss, MYLOSS
+
+patch_typeguard()
 
 
-class GruLabeler(base_models.CategoricalModel):
-    def __init__(self, embedding, n_class, input_size, hidden_size, num_layers, predictor, device):
+class GruLabeler(CategoricalModel):
+    def __init__(self, embedding: Union[NoEmbedding, nn.Embedding, ConvEmbedding],
+                 n_class: int,
+                 input_size: int,
+                 hidden_size: int,
+                 num_layers: int,
+                 predictor: Predictor,
+                 device: str):
         super().__init__()
         self.n_class = n_class
         self.embedding = embedding
@@ -22,22 +33,27 @@ class GruLabeler(base_models.CategoricalModel):
         self.predictor = predictor
         
         # self.loss = MYLOSS(n_class, device)
-        self.loss = functools.partial(EMD_squared_loss, n_class)
+        # self.loss = functools.partial(EMD_squared_loss, n_class)
         # self.loss = CrossEntropyLoss
-        #self.loss = functools.partial(KLDivLoss, n_class)
+        self.loss = functools.partial(KLDivLoss, n_class)
     
-    def forward(self, X):
+    @typechecked
+    def forward(self, X: TensorType["batch", "genome_length"]) -> TensorType["batch", "genome_length", "hidden_size"]:
         X = self.embedding(X)
         output, _ = self.gru(X)
         output = self.predictor(output)
         return output
     
+    def configure_optimizers(self) -> torch.optim.Optimizer:
+        optimizer = torch.optim.Adam(self.parameters(), lr=1e-3, weight_decay=1e-4)
+        return optimizer
+    
     @property
-    def name(self):
+    def name(self) -> str:
         return "GRU"
 
 
-class GruLabelerOrdinal(base_models.OrdinalModel):
+class GruLabelerOrdinal(OrdinalModel):
     def __init__(self, labeler, ordinal_head):
         super().__init__()
         self.labeler = labeler

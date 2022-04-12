@@ -1,5 +1,6 @@
 import pytorch_lightning
-import models
+import deepgen.models
+import deepgen.data
 
 output = "output"
 
@@ -7,35 +8,32 @@ output = "output"
 #  Data
 ##########################
 
-seq_len = 32768
+seq_len = 327680
 
 get_liner_generator.num_genomes = 20000
 get_liner_generator.genome_length = %seq_len
 get_liner_generator.num_generators = 100
+get_liner_generator.return_local_times = True
+get_liner_generator.return_full_dist = False
 
-DatasetPL.train_dataset = @train/DatasetTorch()
-train/DatasetTorch.data_generator = @train/get_liner_generator()
+DatasetXY.train_generator = @train/get_liner_generator()
 train/get_liner_generator.random_seed = 11
 
-DatasetPL.val_dataset = @val/DatasetTorch()
-val/DatasetTorch.data_generator = @val/get_liner_generator()
+DatasetXY.val_generator = @val/get_liner_generator()
 val/get_liner_generator.random_seed = 22
 
-DatasetPL.test_dataset = @test/DatasetTorch()
-test/DatasetTorch.data_generator = @test/get_liner_generator()
+DatasetXY.test_generator = @test/get_liner_generator()
 test/get_liner_generator.random_seed = 33
 test/get_liner_generator.num_generators = 10
 test/get_liner_generator.num_genomes = 5
 
-DatasetPL.seq_len = %seq_len
-DatasetPL.n_class = 32
-DatasetPL.num_workers = 2
+DatasetXY.num_workers = 0
 
 ##########################
 #  Training
 ##########################
 train_model.trainer = @Trainer()
-train_model.data_module = @DatasetPL()
+train_model.data_module = @DatasetXY()
 Trainer.default_root_dir = %output
 Trainer.max_epochs = 1
 Trainer.checkpoint_callback = False
@@ -48,5 +46,5 @@ train_model.resume = False
 #  Testing
 ##########################
 test_model.trainer = @Trainer()
-test_model.datamodule = @DatasetPL()
+test_model.datamodule = @DatasetXY()
 test_model.test_output = ""
