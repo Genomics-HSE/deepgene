@@ -9,15 +9,15 @@ from tqdm import tqdm
 
 if __name__ == '__main__':
     gin.parse_config_file('configs/big_gru.gin')
-    gru_model = GruLabeler()
-    gru_model = gru_model.load_from_checkpoint(checkpoint_path="GRU_trained.ckpt").eval()
+    #gru_model = GruLabeler()
+    gru_model = GruLabeler.load_from_checkpoint(checkpoint_path="GRU_trained.ckpt").eval()
     
     for i in tqdm(range(100)):
         filename = "to_compare/" + str(i) + ".txt"
         genome = open(filename).read().strip()
         a = [int(num) for num in list(genome)]
         input_genome = torch.FloatTensor(a).unsqueeze(0)
-        
+
         out = gru_model(input_genome)
         out.squeeze(0)
         torch.save("to_compare_results/" + str(i) + ".pt", out)
