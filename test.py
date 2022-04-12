@@ -4,6 +4,7 @@ import torch
 import pytorch_lightning
 from deepgen.models import GruLabeler
 from deepgen.utils import train_model, test_model
+from tqdm import tqdm
 
 
 if __name__ == '__main__':
@@ -11,7 +12,7 @@ if __name__ == '__main__':
     gru_model = GruLabeler()
     gru_model = gru_model.load_from_checkpoint(checkpoint_path="GRU_trained.ckpt").eval()
     
-    for i in range(100):
+    for i in tqdm(range(100)):
         filename = "to_compare/" + str(i) + ".txt"
         genome = open(filename).read().strip()
         a = [int(num) for num in list(genome)]
