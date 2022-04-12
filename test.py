@@ -3,6 +3,7 @@ import numpy as np
 import torch
 import pytorch_lightning
 from deepgen.models import GruLabeler
+from deepgen.utils import train_model, test_model
 
 
 if __name__ == '__main__':
