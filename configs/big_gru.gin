@@ -2,7 +2,7 @@ include 'configs/big_config.gin'
 
 checkpoint_path = "output/GRU.ckpt"
 n_class = 32
-DatasetPL.batch_size = 64
+DatasetXY.batch_size = 64
 
 train_model.model = @GruLabeler()
 train_model.checkpoint_path = %checkpoint_path
