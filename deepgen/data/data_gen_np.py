@@ -411,7 +411,7 @@ def get_liner_generator(num_genomes: int,
                        ) -> 'Generator':
     generators = [DataGenerator(num_replicates=num_genomes,
                                 lengt=genome_length,
-                                demographic_events = demographic_events_generator(random_seed=42),
+                                demographic_events = demographic_events_generator(random_seed=random_seed + 100*i),
                                 random_seed=random_seed + i,
                                 return_local_times=return_local_times,
                                 return_full_dist=return_full_dist,
