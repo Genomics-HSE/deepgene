@@ -356,7 +356,7 @@ class DataGenerator():
 
 #get_const_demographcs
 #get_test_demographcs
-#generate_demographic_events
+#get_demographcs_from_ms_command
 def get_generator(num_genomes: int,
                   genome_length: int,
                   num_generators: int = 1,

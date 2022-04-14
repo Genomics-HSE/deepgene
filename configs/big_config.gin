@@ -15,6 +15,9 @@ get_liner_generator.genome_length = %seq_len
 get_liner_generator.num_generators = 100
 get_liner_generator.return_local_times = True
 get_liner_generator.return_full_dist = False
+get_liner_generator.genome_postproccessor = @do_filter
+get_liner_generator.times_postproccessor = @do_filter_2
+get_liner_generator.demographic_events_generator = @get_const_demographcs
 
 DatasetXY.train_generator = @train/get_liner_generator()
 train/get_liner_generator.random_seed = 11
@@ -48,3 +51,9 @@ train_model.resume = False
 test_model.trainer = @Trainer()
 test_model.datamodule = @DatasetXY()
 test_model.test_output = ""
+
+
+
+#get_const_demographcs
+#get_test_demographcs
+#get_demographcs_from_ms_command
