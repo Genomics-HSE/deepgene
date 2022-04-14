@@ -150,18 +150,22 @@ def exponent_split(time: float, N: int) -> int:
     return len(limits) - 1
 
 
+def non_filter(_input):
+    return _input
+
 def do_filter(mutations, l=L_HUMAN):
-    l = int(l/100) + 1
+    l = int(len(mutations)/100)
     genome = [0]*l
-    for m in mutations:
-        genome[int(m/100)] = 1
+    for j in range(int(len(mutations)/100)):
+        genome[j] = max(mutations[j*100:(j+1)*100])
     return genome
 
 
 def do_filter_2(d_times, l=L_HUMAN):
-    for j in range(int(l/100)):
-    # print(f"{j*100}:{(j+1)*100+1}")
-    genome[j] = stats.mode(d_times[j*100:(j+1)*100]).mode[0]
+    genome = [0]*int(len(d_times)/100)
+    for j in range(int(len(d_times)/100)):
+        genome[j] = stats.mode(d_times[j*100:(j+1)*100]).mode[0]
+    return genome 
 
 
 
@@ -181,6 +185,8 @@ class DataGenerator():
                  sample_size: int = 1,
                  return_local_times: bool = True,
                  return_full_dist: bool = True,
+                 genome_postproccessor = non_filter,
+                 times_postproccessor = non_filter,
                  ):
         
         self.sample_size = sample_size
@@ -201,6 +207,8 @@ class DataGenerator():
         self.random_seed = random_seed
         self.number_intervals = number_intervals
         self._data = None
+        self.genome_postproccessor = genome_postproccessor
+        self.times_postproccessor = times_postproccessor
 
         self.return_local_times = return_local_times
         self.return_full_dist = return_full_dist
@@ -258,11 +266,11 @@ class DataGenerator():
                 time, self.number_intervals)] += (int(right - left)) / self.len
         
         if self.return_local_times and self.return_full_dist:
-            return mutations, d_times, prior_dist
+            return self.genome_postproccessor(mutations), self.times_postproccessor(d_times), prior_dist
         elif self.return_local_times and not self.return_full_dist:
-            return mutations, d_times
+            return self.genome_postproccessor(mutations), self.times_postproccessor(d_times)
         elif self.return_full_dist and not self.return_local_times:
-            return mutations, prior_dist
+            return self.genome_postproccessor(mutations), prior_dist
         return None
 
 
