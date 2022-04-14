@@ -5,6 +5,7 @@ from math import (exp, log)
 import msprime
 from sklearn.utils import shuffle
 import numpy as np
+from scipy import stats
 
 N = 32  # int(sys.argv[4])
 
@@ -119,6 +120,25 @@ def generate_demographic_events(population: int = None) -> 'msprime.Demography':
     return demography
 
 
+def get_const_demographcs(population: int = 10_000) -> 'msprime.Demography':
+    
+    demography = msprime.Demography()
+    demography.add_population(name="A", initial_size=initial_size)
+
+    return demography
+
+def get_test_demographcs(population: int = 10_000) -> 'msprime.Demography':
+    demography = msprime.Demography()
+
+    demography.add_population(name="A", initial_size=initial_size)
+    demography.add_population_parameters_change(400, initial_size=0.1*initial_size)
+    demography.add_population_parameters_change(2400, initial_size=1.*initial_size)
+    demography.add_population_parameters_change(8000, initial_size=.5*initial_size)
+    demography.add_population_parameters_change(40_000, initial_size=1.*initial_size)
+    demography.add_population_parameters_change(80_000, initial_size=2.*initial_size)
+
+    return demography 
+
 def simple_split(time: float, N: int, split_const: int = 5000) -> int:
     return int(min(time // split_const, N - 1))
 
@@ -128,6 +148,22 @@ def exponent_split(time: float, N: int) -> int:
         if limit > time:
             return i
     return len(limits) - 1
+
+
+def do_filter(mutations, l=L_HUMAN):
+    l = int(l/100) + 1
+    genome = [0]*l
+    for m in mutations:
+        genome[int(m/100)] = 1
+    return genome
+
+
+def do_filter_2(d_times, l=L_HUMAN):
+    for j in range(int(l/100)):
+    # print(f"{j*100}:{(j+1)*100+1}")
+    genome[j] = stats.mode(d_times[j*100:(j+1)*100]).mode[0]
+
+
 
 
 class DataGenerator():
