@@ -277,11 +277,16 @@ class DataGenerator():
 def get_generator(num_genomes: int,
                   genome_length: int,
                   num_generators: int = 1,
-                  random_seed: int = 42) -> 'Generator[DataGenerator]':
+                  random_seed: int = 42,
+                  genome_postproccessor = non_filter,
+                  times_postproccessor = non_filter
+                 ) -> 'Generator[DataGenerator]':
     yield from [DataGenerator(lengt=genome_length,
                               num_replicates=num_genomes,
                               demographic_events=generate_demographic_events(),
                               random_seed=random_seed + i,
+                              genome_postproccessor=genome_postproccessor,
+                              times_postproccessor=times_postproccessor
                               ) for i in range(num_generators)]
 
 
