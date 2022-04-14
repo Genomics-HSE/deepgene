@@ -3,9 +3,14 @@ import sys
 from math import (exp, log)
 
 import msprime
+import demes
+
 from sklearn.utils import shuffle
 import numpy as np
 from scipy import stats
+
+from numpy import random as rnd
+from math import log, exp
 
 N = 32  # int(sys.argv[4])
 
@@ -64,7 +69,7 @@ def give_population_size() -> int:
     return int(np.random.uniform(*[1_000, 29_000]))
 
 
-def generate_demographic_events_complex(population: int = None) -> 'msprime.Demography':
+def generate_demographic_events_complex(population: int = None, random_seed: int =42) -> 'msprime.Demography':
     if not population:
         population = give_population_size()
     
@@ -100,7 +105,7 @@ def generate_demographic_events_complex(population: int = None) -> 'msprime.Demo
     return demography
 
 
-def generate_demographic_events(population: int = None) -> 'msprime.Demography':
+def generate_demographic_events(population: int = None, random_seed: int =42) -> 'msprime.Demography':
     if not population:
         population = give_population_size()
     demography = msprime.Demography()
@@ -120,14 +125,14 @@ def generate_demographic_events(population: int = None) -> 'msprime.Demography':
     return demography
 
 
-def get_const_demographcs(population: int = 10_000) -> 'msprime.Demography':
+def get_const_demographcs(population: int = 10_000, random_seed: int =42) -> 'msprime.Demography':
     
     demography = msprime.Demography()
     demography.add_population(name="A", initial_size=initial_size)
 
     return demography
 
-def get_test_demographcs(population: int = 10_000) -> 'msprime.Demography':
+def get_test_demographcs(population: int = 10_000, random_seed: int =42) -> 'msprime.Demography':
     demography = msprime.Demography()
 
     demography.add_population(name="A", initial_size=initial_size)
@@ -168,6 +173,81 @@ def do_filter_2(d_times, l=L_HUMAN):
     return genome 
 
 
+def generate_ms_command(random_seed=None):
+    
+    if random_seed is not None:
+        rnd.seed(random_seed)
+    #Здесь мы один раз выбираем точки, в которых можно менять Ne
+    #-eN 0.0 3.0 -eN 0.025 0.2 -eN 0.175 1.5 -eN 3 3 -eN 10.0 3
+    times = [0.0, 0.025, 0.175, 3.0, 10.0]
+    eps=1e-5
+    times[0] = eps
+    T = []
+    for i in range(4):
+        T.append(times[i])
+        T.append( (times[i]**2 * times[i+1])**(1./3.) )
+        T.append( (times[i] * times[i+1]**2)**(1./3.) )
+    T.append(10.0)
+    T[0] = 0.0
+
+    #Эта функция генерирует траектории (сильно ad hoc, но на вид получается неплохо, мне кажется)
+    def GenerateNE(T):
+        Ne = [0.0 for i in range(len(T))]
+
+        #Time interval 0.0 - 0.025
+        N1 = rnd.uniform(0.5, 5)
+        Ne[0] = N1
+        Ne[1] = N1
+        Ne[2] = N1
+   
+        N2 = exp( rnd.uniform(log(0.1+0.2), log(5.0+0.2)) )-0.2
+        N3 = rnd.uniform(0.5, 5)
+        N4 = rnd.uniform(0.5, 5)
+
+        #Time interval 0.025 - 0.175
+        shift = Ne[2] - 0.3
+        shift = 0.0
+        if shift >= 0.0:
+            Ne[3] = exp( rnd.uniform( log(N1+shift), log(N2+shift) ) ) - shift
+        else:
+            Ne[3] = rnd.uniform( N1, N2 )
+        Ne[4] = N2
+        if shift >= 0.0:
+            Ne[5] = exp( rnd.uniform( log(N2+shift), (log(N3+shift)+log(N2+shift))/2.0 ) ) - shift
+        else:
+            Ne[5] = rnd.uniform( N2, (N3+N2)/2.0 )
+
+        #Time interval 0.175 - 3.0
+        Ne[6] = rnd.uniform( (N3+N2)/2.0, N3 )
+        Ne[7] = N3
+        Ne[8] = rnd.uniform( N3, N4 )
+
+        #Time interval 3.0 - 10.0
+        Ne[9] = N4
+        Ne[10] = rnd.uniform(0.5, 5)
+        Ne[11] = rnd.uniform(0.5, 5)
+        Ne[12] = 1.0
+        return(Ne)
+    
+    anwser = '' 
+    Ne = GenerateNE(T)
+    #Собираем строку в формате ms
+    for t, ne in zip(T, Ne):
+        anwser += f"-eN {t} {ne} "
+    return anwser 
+
+
+
+def get_demographcs_from_ms_command(ms = None, init_population: int = 10_000, random_seed=42) -> 'msprime.Demography':
+    if type(ms) != str:
+        if ms is not None:
+            ms = ms(random_seed)
+        else:
+            ms = generate_ms_command(random_seed)
+        
+    graph = demes.from_ms(ms, N0=init_population, deme_names=["A"])
+    demography = msprime.Demography.from_demes(graph)
+    return demography
 
 
 class DataGenerator():
@@ -288,19 +368,24 @@ def get_generator(num_genomes: int,
                               num_replicates=num_genomes,
                               demographic_events=get_const_demographcs(),
                               random_seed=random_seed + i,
-                              genome_postproccessor=do_filter,
-                              times_postproccessor=do_filter_2
+                              genome_postproccessor=genome_postproccessor,
+                              times_postproccessor=times_postproccessor
                               ) for i in range(num_generators)]
 
 
 def get_list(num_genomes: int,
              genome_length: int,
              num_generators: int = 1,
-             random_seed: int = 42) -> 'Tuple(List[int], List[int], List[int])':
+             random_seed: int = 42,
+             genome_postproccessor = non_filter,
+             times_postproccessor = non_filter
+            ) -> 'Tuple(List[int], List[int], List[int])':
     generator = get_generator(num_genomes=num_genomes,
                               genome_length=genome_length,
                               num_generators=num_generators,
                               random_seed=random_seed,
+                              genome_postproccessor=genome_postproccessor,
+                              times_postproccessor=times_postproccessor
                               )
     genomes = []
     d_times = []
@@ -319,13 +404,19 @@ def get_liner_generator(num_genomes: int,
                         num_generators: int = 1,
                         random_seed: int = 42,
                         return_local_times: bool = True,
-                        return_full_dist: bool = True) -> 'Generator':
+                        return_full_dist: bool = True,
+                        genome_postproccessor = non_filter,
+                        times_postproccessor = non_filter,
+                        demographic_events_generator= generate_demographic_events
+                       ) -> 'Generator':
     generators = [DataGenerator(num_replicates=num_genomes,
                                 lengt=genome_length,
-                                demographic_events=generate_demographic_events(),
+                                demographic_events = demographic_events_generator(random_seed=42),
                                 random_seed=random_seed + i,
                                 return_local_times=return_local_times,
-                                return_full_dist=return_full_dist
+                                return_full_dist=return_full_dist,
+                                genome_postproccessor=genome_postproccessor,
+                                times_postproccessor=times_postproccessor
                                 ) for i in range(num_generators)]
     generators = shuffle(generators, random_state=random_seed)
     
