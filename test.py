@@ -21,4 +21,4 @@ if __name__ == '__main__':
     
             out = gru_model(input_genome)
             out.squeeze(0)
-            torch.save("output_ms/to_compare_results/" + str(i) + ".pt", out)
+            torch.save(out, "output_ms/to_compare_results/" + str(i) + ".pt")
