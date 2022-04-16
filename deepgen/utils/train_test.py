@@ -1,7 +1,9 @@
 import sys
 from os.path import join
 
+import torch
 from pytorch_lightning import Trainer, LightningModule, LightningDataModule
+from tqdm import tqdm
 import transformers
 
 from deepgen.models import ReformerLabeler
@@ -31,19 +33,23 @@ def test_model(trainer: Trainer,
                test_output: str,
                datamodule: LightningDataModule,
                ):
-    print(checkpoint_path)
-    model = model.load_from_checkpoint(checkpoint_path=checkpoint_path)
-    # trainer.test(model=model, datamodule=datamodule)
+    predict_by_model(model, checkpoint_path, test_output, datamodule)
     return model
 
 
-def predict_by_model(trainer: Trainer,
-               model: LightningModule,
-               checkpoint_path: str,
-               test_output: str,
-               datamodule: LightningDataModule,
-               ):
-    print(checkpoint_path)
-    model = model.load_from_checkpoint(checkpoint_path=checkpoint_path)
-    trainer.test(model=model, datamodule=datamodule)
+def predict_by_model(model: LightningModule,
+                     checkpoint_path: str,
+                     test_output: str,
+                     datamodule: LightningDataModule,
+                     ):
+    print("Checkpoint path is", checkpoint_path)
+    model = model.load_from_checkpoint(checkpoint_path=checkpoint_path).eval()
+    
+    with torch.no_grad():
+        for i, (x, y_true) in tqdm(enumerate(datamodule.test_dataloader())):
+            y_pred = model(x)
+            torch.save(x, join(test_output, str(i) + "_x.pt"))
+            torch.save(y_true, join(test_output, str(i) + "_y_true.pt"))
+            torch.save(y_pred, join(test_output, str(i) + "_y_pred.pt"))
+    
     return

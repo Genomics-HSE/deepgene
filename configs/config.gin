@@ -2,7 +2,7 @@ import pytorch_lightning
 import deepgen.models
 import deepgen.data
 
-output = "output"
+output = "output_ms"
 
 ##########################
 #  Data
@@ -27,7 +27,7 @@ val/get_liner_generator.random_seed = 22
 
 DatasetXY.test_generator = @test/get_liner_generator()
 test/get_liner_generator.random_seed = 33
-test/get_liner_generator.num_genomes = 5
+test/get_liner_generator.num_genomes = 1
 test/get_liner_generator.num_generators = 10
 
 DatasetXY.num_workers = 0
@@ -50,7 +50,7 @@ train_model.resume = False
 ##########################
 test_model.trainer = @Trainer()
 test_model.datamodule = @DatasetXY()
-test_model.test_output = ""
+test_model.test_output = "output_ms"
 
 
 
