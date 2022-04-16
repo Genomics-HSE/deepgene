@@ -10,5 +10,13 @@ hse-run:
 	sbatch --constraint="type_a|type_b|type_c|type_d" --signal=INT@50 --gpus=$(GPU) -c $(CPU) -t $(T) run.sh;
 	rm run.sh
 
+
+hse-run-test:
+	echo "#!/bin/bash" > run.sh;
+	echo "srun python test.py" >> run.sh;
+	sbatch --constraint="type_a|type_b|type_c|type_d" --signal=INT@50 --gpus=$(GPU) -c $(CPU) -t $(T) run.sh;
+	rm run.sh
+
+
 print:
 	echo $(config_file)

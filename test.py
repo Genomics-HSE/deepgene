@@ -10,7 +10,7 @@ from tqdm import tqdm
 if __name__ == '__main__':
     gin.parse_config_file('configs/big_gru.gin')
     #gru_model = GruLabeler()
-    gru_model = GruLabeler.load_from_checkpoint(checkpoint_path="GRU_trained.ckpt").eval()
+    gru_model = GruLabeler.load_from_checkpoint(checkpoint_path="output_ms/GRU.ckpt").eval()
     
     for i in tqdm(range(100)):
         filename = "to_compare/" + str(i) + ".txt"
@@ -20,4 +20,4 @@ if __name__ == '__main__':
 
         out = gru_model(input_genome)
         out.squeeze(0)
-        torch.save("to_compare_results/" + str(i) + ".pt", out)
+        torch.save("output_ms/to_compare_results/" + str(i) + ".pt", out)
