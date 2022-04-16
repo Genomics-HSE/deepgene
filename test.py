@@ -8,6 +8,8 @@ from tqdm import tqdm
 
 
 if __name__ == '__main__':
+    gin.parse_config_file('configs/big_gru.gin')
+    #gru_model = GruLabeler()
     gru_model = GruLabeler.load_from_checkpoint(checkpoint_path="output_ms/GRU.ckpt").eval()
     
     with torch.no_grad():
