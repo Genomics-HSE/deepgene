@@ -333,8 +333,8 @@ class DataGenerator():
 
         # for m in mutated_ts.mutations():
 
-        # for m in mutated_ts.tables.sites.position:
-        #    mutations[int(m)] = 1
+        for m in mutated_ts.tables.sites.position:
+            mutations[int(m)] = 1
 
         for t in mutated_ts.aslist():
             interval = t.get_interval()
