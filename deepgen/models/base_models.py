@@ -21,7 +21,25 @@ class CategoricalModel(LightningModule):
                       batch_ix: Any) -> Union[TensorType[...], Dict[str, Any]]:
         X_batch, y_batch = batch
         logits = self.forward(X_batch)
-        loss = self.loss(logits, y_batch)
+        loss1 = self.loss1(logits, y_batch)
+
+        # Loss2
+        probs = F.softmax(logits, dim=-1)
+        probs = torch.sum(probs, dim=[1])
+        probs = F.normalize(probs, dim=1)
+        log_probs = torch.log(probs)
+
+        prob_targets = []
+        for y in y_batch:
+            bin_count = torch.bincount(y.long(), minlength=32)
+            bin_count = bin_count / torch.sum(bin_count)
+            prob_targets.append(bin_count)
+        prob_targets = torch.stack(prob_targets, dim=0)
+
+        loss2 = F.kl_div(log_probs, prob_targets, reduction='mean')
+        loss = loss1 + loss2
+        print(loss1, "loss1")
+        print(loss2, "loss2")
         self.log("train_loss", loss, on_step=True, on_epoch=True)
         return {'loss': loss}
     
@@ -99,7 +117,7 @@ class OrdinalHead(LightningModule):
 
 
 class ConvEmbedding(LightningModule):
-    def __init__(self, n_layers, in_channels, out_channels, kernel_size, stride):
+    def __init__(self, n_layers: int, in_channels: int, out_channels: int, kernel_size: int, stride: int):
         super().__init__()
         conv_embeds = [
             nn.Conv1d(
@@ -122,8 +140,9 @@ class ConvEmbedding(LightningModule):
         )
         
         self.conv_embeds = nn.ModuleList(conv_embeds)
-    
-    def forward(self, X):
+
+    @typechecked
+    def forward(self, X: TensorType["batch", "genome_length"]) -> TensorType["batch", "genome_length", "hidden_size"]:
         output = X.float()
         output = output.unsqueeze(1)
         
@@ -133,10 +152,19 @@ class ConvEmbedding(LightningModule):
         output = output.permute(0, 2, 1)
         return output
 
+    @property
+    def name(self) -> str:
+        return "convembed"
+
 
 class NoEmbedding(LightningModule):
     def __init__(self):
         super(NoEmbedding, self).__init__()
-    
-    def forward(self, X):
+
+    @typechecked
+    def forward(self, X: TensorType["batch", "genome_length"])-> TensorType["batch", "genome_length", "hidden_size"]:
         return X.unsqueeze(2).float()
+
+    @property
+    def name(self) -> str:
+        return "noembed"
