@@ -20,7 +20,7 @@ coeff = np.log(T_max) / (N - 1)
 limits = [np.exp(coeff * i) for i in range(N)]
 limits = [2_000 * (np.exp(i * np.log(1 + 10 * T_max) / N) - 1)
           for i in range(N)]
-limits = [2000.] + [l for l in limits if l > 2000.0]
+limits = [1000.] + [l for l in limits if l > 1000.0]
 
 RANDOM_SEED = 42
 np.random.seed(RANDOM_SEED)
