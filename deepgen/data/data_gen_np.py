@@ -16,11 +16,13 @@ N = 32  # int(sys.argv[4])
 
 T_max = 20  # 400_000
 coeff = np.log(T_max) / (N - 1)
+MAGIC_COEFF = 1_000 # 2_000 ## 1_000 for 169302 as T_max, 2_000 for 338605
+cut_coeff = 1000.0
 
 limits = [np.exp(coeff * i) for i in range(N)]
-limits = [2_000 * (np.exp(i * np.log(1 + 10 * T_max) / N) - 1)
+limits = [MAGIC_COEFF * (np.exp(i * np.log(1 + 10 * T_max) / N) - 1)
           for i in range(N)]
-limits = [1000.] + [l for l in limits if l > 1000.0]
+limits = [cut_coeff] + [l for l in limits if l > cut_coeff]
 
 RANDOM_SEED = 42
 np.random.seed(RANDOM_SEED)
