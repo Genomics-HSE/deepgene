@@ -2,13 +2,13 @@ import pytorch_lightning
 import deepgen.models
 import deepgen.data
 
-output = "output_ms"
+output = "o1"
 
 ##########################
 #  Data
 ##########################
 
-seq_len = 3000000
+seq_len = 30000000
 
 get_liner_generator.num_genomes = 20000
 get_liner_generator.genome_length = %seq_len
@@ -27,7 +27,7 @@ val/get_liner_generator.random_seed = 22
 
 DatasetXY.test_generator = @test/get_liner_generator()
 test/get_liner_generator.random_seed = 33
-test/get_liner_generator.num_genomes = 1
+test/get_liner_generator.num_genomes = 10
 test/get_liner_generator.num_generators = 10
 
 DatasetXY.num_workers = 0

@@ -2,10 +2,10 @@ import pytorch_lightning
 import deepgen.models
 import deepgen.data
 
-output = "gru_const/layer4"
-model_name = "GRU-small.ckpt"
+output = "gru_com_dist_const/layer1"
+model_name = "GRU.ckpt"
 n_class = 32
-seq_len = 3_000_000
+seq_len = 3_000
 
 ##########################
 #  Data
@@ -15,7 +15,7 @@ get_liner_generator.num_genomes = 1000
 get_liner_generator.genome_length = %seq_len
 get_liner_generator.num_generators = 100
 get_liner_generator.return_local_times = True
-get_liner_generator.return_full_dist = False
+get_liner_generator.return_full_dist = True
 get_liner_generator.genome_postproccessor = @do_filter
 get_liner_generator.times_postproccessor = @do_filter_2
 get_liner_generator.demographic_events_generator = @get_const_demographcs
@@ -39,7 +39,7 @@ test/get_liner_generator.num_generators = 10
 ##########################
 #  Training
 ##########################
-train_model.model = @GruLabeler()
+train_model.model = @GruComDistLabeler()
 train_model.trainer = @Trainer()
 train_model.data_module = @DatasetXY()
 train_model.resume = False
@@ -84,15 +84,15 @@ test_model.test_output = %output
 ##########################
 
 test_model.model_name = %model_name
-test_model.model = @GruLabeler()
+test_model.model = @GruComDistLabeler()
 
 ##########################
 #  Model
 ##########################
 
-#GruLabeler.embedding = @ConvEmbedding() #Embedding
-#GruLabeler.embedding = @Embedding()
-GruLabeler.embedding = @NoEmbedding()
+#GruComDistLabeler.embedding = @ConvEmbedding() #Embedding
+#GruComDistLabeler.embedding = @Embedding()
+GruComDistLabeler.embedding = @NoEmbedding()
 
 Embedding.num_embeddings = 2
 Embedding.embedding_dim = %n_class
@@ -103,12 +103,12 @@ ConvEmbedding.out_channels = %n_class
 ConvEmbedding.kernel_size = 31
 ConvEmbedding.stride = 1
 
-GruLabeler.input_size = 1
-GruLabeler.n_class = %n_class
-GruLabeler.hidden_size = %n_class
-GruLabeler.num_layers = 4
+GruComDistLabeler.input_size = 1
+GruComDistLabeler.n_class = %n_class
+GruComDistLabeler.hidden_size = %n_class
+GruComDistLabeler.num_layers = 1
 
-GruLabeler.predictor = @Predictor()
+GruComDistLabeler.predictor = @Predictor()
 Predictor.d_model = 64
 Predictor.dropout = 0.1
 Predictor.n_class = %n_class

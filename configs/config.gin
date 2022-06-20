@@ -2,17 +2,17 @@ import pytorch_lightning
 import deepgen.models
 import deepgen.data
 
-output = "output_ms"
+output = "lstm_const"
 
 ##########################
 #  Data
 ##########################
 
-seq_len = 2000
+seq_len = 3_000_000
 
-get_liner_generator.num_genomes = 1
+get_liner_generator.num_genomes = 10
 get_liner_generator.genome_length = %seq_len
-get_liner_generator.num_generators = 1
+get_liner_generator.num_generators = 10
 get_liner_generator.return_local_times = True
 get_liner_generator.return_full_dist = False
 get_liner_generator.genome_postproccessor = @do_filter
@@ -50,7 +50,7 @@ train_model.resume = False
 ##########################
 test_model.trainer = @Trainer()
 test_model.datamodule = @DatasetXY()
-test_model.test_output = "output_ms"
+test_model.test_output = %output
 
 
 

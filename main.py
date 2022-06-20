@@ -1,3 +1,4 @@
+import comet_ml
 import time
 import signal
 import gin
@@ -19,16 +20,16 @@ if __name__ == '__main__':
     parser.add_argument("--config", type=str, default="")
     action_parsers = parser.add_subparsers(title='actions', dest='action')
     train_parser = action_parsers.add_parser('train')
-    
+
     predict_parser = action_parsers.add_parser('test')
     predict_parser.add_argument('--path', type=str)
     args = parser.parse_args()
-    
+
     print(args.config)
     gin.parse_config_file(args.config)
-    
+
     if args.action == "train":
-        train_model()
+        train_model(configs=gin.config._CONFIG)
     elif args.action == "test":
         test_model()
     else:

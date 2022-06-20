@@ -1,0 +1,23 @@
+##########################
+#  Training
+##########################
+
+trainer:
+  max_epochs: 1
+  enable_checkpointing: True
+  auto_lr_find: True
+  gpus: 0
+  default_root_dir: "gru_const"
+  log_every_n_steps: 1
+  val_check_interval: 50
+  limit_val_batches: 1
+  callbacks:
+    class_path: pytorch_lightning.callbacks.ModelCheckpoint
+    init_args:
+      monitor: "val_loss"
+      dirpath: "gru_const"
+      filename: "gru-{val_loss:.2f}"
+      save_top_k: 3
+      mode: "min"
+
+

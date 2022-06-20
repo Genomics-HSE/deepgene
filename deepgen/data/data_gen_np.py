@@ -350,7 +350,7 @@ class DataGenerator():
                 time, self.number_intervals)] += (int(right - left)) / self.len
 
         if self.return_local_times and self.return_full_dist:
-            return self.genome_postproccessor(mutations), self.times_postproccessor(d_times), prior_dist
+            return self.genome_postproccessor(mutations), prior_dist, self.times_postproccessor(d_times)
         elif self.return_local_times and not self.return_full_dist:
             return self.genome_postproccessor(mutations), self.times_postproccessor(d_times)
         elif self.return_full_dist and not self.return_local_times:

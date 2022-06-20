@@ -1,5 +1,5 @@
 GPU = 1
-CPU = 2
+CPU = 8
 T = 600
 
 config = configs/reformer.gin
@@ -18,5 +18,6 @@ hse-run-test:
 	rm run.sh
 
 
+ex = ""
 print:
-	echo $(config_file)
+	echo $(ex)
