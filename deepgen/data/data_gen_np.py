@@ -14,6 +14,8 @@ from math import log, exp
 
 N = 32  # int(sys.argv[4])
 
+LOST_SIGN = 2
+
 T_max = 20  # 400_000
 coeff = np.log(T_max) / (N - 1)
 MAGIC_COEFF = 550 # 2_000 ## 1_000 for 169302 as T_max, 2_000 for 338605
@@ -269,6 +271,8 @@ class DataGenerator():
                  return_full_dist: bool = True,
                  genome_postproccessor=non_filter,
                  times_postproccessor=non_filter,
+                 use_lost: bool = False,
+                 lost_probability: float = 0.001
                  ):
 
         self.sample_size = sample_size
@@ -291,6 +295,12 @@ class DataGenerator():
         self._data = None
         self.genome_postproccessor = genome_postproccessor
         self.times_postproccessor = times_postproccessor
+        if lost_probability < 0.0 or lost_probability > 1.0:
+            raise BaseException(
+                    "Lost probability must be beetween 0.0 and 1.0")
+        self.use_lost = use_lost
+        self.lost_probability = lost_probability
+        
 
         self.return_local_times = return_local_times
         self.return_full_dist = return_full_dist
@@ -348,6 +358,13 @@ class DataGenerator():
                 time, self.number_intervals)] * int(right - left)
             prior_dist[self.splitter(
                 time, self.number_intervals)] += (int(right - left)) / self.len
+            
+            
+        if self.use_lost:
+            for i, _ in enumerate(mutations):
+                if np.random.random() < self.lost_probability:
+                    # print(f"change to {LOST_SIGN}")
+                    mutations[i] = LOST_SIGN
 
         if self.return_local_times and self.return_full_dist:
             return self.genome_postproccessor(mutations), prior_dist, self.times_postproccessor(d_times)
