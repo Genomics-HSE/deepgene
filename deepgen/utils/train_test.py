@@ -17,7 +17,7 @@ def train_model(trainer: Trainer,
                 ):
     print("Running {}-model...".format(model.name))
 
-    trainer.logger.experiment.log_parameters(configs)
+    #trainer.logger.experiment.log_parameters(configs)
 
     if resume:
         # load model

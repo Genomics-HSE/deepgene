@@ -12,8 +12,6 @@ from deepgen.loss import KLDivLoss, CrossEntropyLoss, EMD_squared_loss, CTC_loss
 
 patch_typeguard()
 
-from pytorch_lightning.utilities.cli import MODEL_REGISTRY, DATAMODULE_REGISTRY
-
 
 class GruLabeler(CategoricalModel):
     def __init__(self, embedding: Union[NoEmbedding, nn.Embedding, ConvEmbedding],
@@ -56,7 +54,6 @@ class GruLabeler(CategoricalModel):
         return "GRU" + "-" + self.embedding.name
 
 
-@MODEL_REGISTRY
 class Mock(CategoricalModel):
     def __int__(self, a, b, c):
         self.a = a

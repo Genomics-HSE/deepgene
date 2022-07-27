@@ -1,4 +1,5 @@
 import os
+import sys
 from typing import Union, List, Optional
 from itertools import cycle
 from collections.abc import Callable
@@ -22,7 +23,7 @@ class DatasetXY(pl.LightningDataModule):
         
         self.batch_size = batch_size
         self.num_workers = num_workers
-        
+
         self.train_dataset = DatasetTorch(train_generator)
         self.val_dataset = DatasetTorch(val_generator)
         self.test_dataset = DatasetTorch(test_generator)
@@ -84,7 +85,9 @@ def one_hot_encoding_numpy(y_data, num_class):
 if __name__ == '__main__':
     from data_gen_np import get_liner_generator
     
-    generator = get_liner_generator(5, 7, 1)
+    generator = get_liner_generator(num_genomes=2,
+                                    genome_length=10,
+                                    num_generators=2)
     
     dataset = DatasetTorch(generator)
     
@@ -92,5 +95,7 @@ if __name__ == '__main__':
     #     print(x, y)
     
     loader = DataLoader(dataset, batch_size=2)
-    for x, y in loader:
-        print(x)
+    for x, y, z in loader:
+        print(len(x))
+        print(len(y))
+        print(len(z))

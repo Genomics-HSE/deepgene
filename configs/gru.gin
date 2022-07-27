@@ -5,7 +5,7 @@ import deepgen.data
 output = "gru_const/layer4"
 model_name = "GRU-small.ckpt"
 n_class = 32
-seq_len = 3_000_000
+seq_len = 3_000
 
 ##########################
 #  Data
@@ -47,7 +47,7 @@ train_model.output = %output
 train_model.model_name = %model_name
 
 Trainer.max_epochs = 1
-Trainer.enable_checkpointing = True
+Trainer.enable_checkpointing = False
 Trainer.auto_lr_find = True
 Trainer.logger = @CometLogger()
 Trainer.gpus = 0
@@ -55,7 +55,7 @@ Trainer.default_root_dir = %output
 Trainer.log_every_n_steps = 1
 Trainer.val_check_interval = 50
 Trainer.limit_val_batches = 1
-Trainer.callbacks = [@ModelCheckpoint()]
+Trainer.callbacks = None #[@ModelCheckpoint()]
 
 ModelCheckpoint.monitor = "val_loss"
 ModelCheckpoint.dirpath = %output

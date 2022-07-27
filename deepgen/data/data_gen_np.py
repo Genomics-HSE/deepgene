@@ -252,6 +252,11 @@ def get_demographcs_from_ms_command(ms=None, init_population: int = 10_000, rand
     return demography
 
 
+filter_map = {
+    'do_filter': do_filter,
+    'do_filter_2': do_filter_2
+}
+
 class DataGenerator():
     def __init__(self,
                  recombination_rate: float = RHO_HUMAN,
@@ -289,8 +294,8 @@ class DataGenerator():
         self.random_seed = random_seed
         self.number_intervals = number_intervals
         self._data = None
-        self.genome_postproccessor = genome_postproccessor
-        self.times_postproccessor = times_postproccessor
+        self.genome_postproccessor = filter_map[genome_postproccessor]
+        self.times_postproccessor = filter_map[times_postproccessor]
 
         self.return_local_times = return_local_times
         self.return_full_dist = return_full_dist
