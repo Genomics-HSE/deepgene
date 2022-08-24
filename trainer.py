@@ -1,13 +1,6 @@
+import comet_ml
 import pytorch_lightning as pl
-from pytorch_lightning.utilities.cli import LightningCLI
-import deepgen.models
-from deepgen.models import GruLabeler
-from deepgen.data import DatasetXY
-
-
-from pytorch_lightning.utilities.cli import MODEL_REGISTRY
-
-MODEL_REGISTRY.register_classes(deepgen.models, pl.LightningModule)
+from pytorch_lightning.cli import LightningCLI
 
 
 class MyLightningCLI(LightningCLI):
@@ -21,6 +14,9 @@ class MyLightningCLI(LightningCLI):
 
 if __name__ == '__main__':
 
-    cli = LightningCLI(pl.LightningModule, pl.LightningDataModule, subclass_mode_model=True, subclass_mode_data=True)
+    cli = LightningCLI(pl.LightningModule, pl.LightningDataModule,
+                       subclass_mode_model=True,
+                       subclass_mode_data=True,
+                       save_config_overwrite=True)
 
 

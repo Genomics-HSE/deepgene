@@ -1,25 +1,26 @@
-seed_everything: null
-ckpt_path: "kotok"
+seed_everything: 1234
+#ckpt_path: "results"
 
 trainer:
-  logger:
-    class_path: pytorch_lightning.loggers.comet.CometLogger
-    init_args:
-      workspace: "kenenbek"
-      project_name: "deepgen"
-      save_dir: *output
-  enable_checkpointing: true
-  callbacks:
-    class_path: pytorch_lightning.callbacks.ModelCheckpoint
-    init_args:
-      monitor: "val_loss"
-      dirpath: *output
-      filename: "gru-{val_loss:.2f}"
-      save_top_k: 3
-      mode: "min"
+#  logger:
+#    class_path: pytorch_lightning.loggers.comet.CometLogger
+#    init_args:
+#      workspace: "kenenbek"
+#      project_name: "deepgen"
+#      save_dir: "results"
+  enable_checkpointing: false
+#  callbacks:
+#    class_path: pytorch_lightning.callbacks.ModelCheckpoint
+#    init_args:
+#      monitor: "val_loss"
+#      dirpath: ${trainer.logger.save_dir}
+#      filename: "gru-{val_loss:.2f}"
+#      save_top_k: 3
+#      mode: "min"
 
-  default_root_dir: *output
-  gpus: 0
+  default_root_dir: "results"
+  accelerator: 'cpu'
+  devices: null
   max_epochs: 1
   limit_val_batches: 1
   val_check_interval: 50
@@ -40,15 +41,20 @@ model:
         d_model: 64
         dropout: 0.1
         n_class: 32
+
 data:
   class_path: deepgen.data.DatasetXY
   init_args:
+    kotok:
+      class_path: deepgen.data.Kotok
+      init_args:
+        a: 177
     train_generator:
       class_path: deepgen.data.get_liner_generator
       init_args:
         random_seed: 11
         num_genomes: 1000
-        genome_length: *seq_len
+        genome_length: 300
         num_generators: 100
         return_local_times: true
         return_full_dist: false
@@ -61,7 +67,7 @@ data:
       init_args:
         random_seed: 11
         num_genomes: 1000
-        genome_length: *seq_len
+        genome_length: ${data.genome_length}
         num_generators: 100
         return_local_times: true
         return_full_dist: false
@@ -76,7 +82,7 @@ data:
       init_args:
         random_seed: 11
         num_genomes: 1000
-        genome_length: *seq_len
+        genome_length: ${data.genome_length}
         num_generators: 100
         return_local_times: true
         return_full_dist: false

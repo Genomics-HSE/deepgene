@@ -11,8 +11,15 @@ from torch.utils import data
 from torch.utils.data import DataLoader
 
 
+class Kotok(pl.LightningModule):
+    def __init__(self, a):
+        super(Kotok, self).__init__()
+        self.a = a
+
+
 class DatasetXY(pl.LightningDataModule):
     def __init__(self,
+                 kotok: Kotok,
                  train_generator,
                  val_generator,
                  test_generator,
@@ -23,6 +30,19 @@ class DatasetXY(pl.LightningDataModule):
         
         self.batch_size = batch_size
         self.num_workers = num_workers
+
+        print(kotok)
+        print(kotok)
+        print(kotok)
+        print(kotok)
+        print(kotok)
+        print(kotok.a)
+        print(kotok.a)
+        print(kotok.a)
+        print(kotok.a)
+        print(train_generator, "kotok")
+        print(val_generator, "kotok")
+        print(test_generator, "kotok")
 
         self.train_dataset = DatasetTorch(train_generator)
         self.val_dataset = DatasetTorch(val_generator)

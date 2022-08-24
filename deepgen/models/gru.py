@@ -22,7 +22,7 @@ class GruLabeler(CategoricalModel):
                  predictor: Predictor
                  ):
         super().__init__()
-        self.save_hyperparameters()
+        self.save_hyperparameters(ignore=['embedding', 'predictor'])
         self.n_class = n_class
         self.embedding = embedding
         self.gru = nn.GRU(input_size=input_size,
@@ -37,6 +37,11 @@ class GruLabeler(CategoricalModel):
         # self.loss = functools.partial(EMD_squared_loss, n_class)
         # self.loss = CrossEntropyLoss
         self.loss1 = functools.partial(KLDivLoss, n_class)
+
+        print(predictor, embedding)
+        print(predictor, embedding)
+        print(predictor, embedding)
+        print(predictor, embedding)
 
     @typechecked
     def forward(self, X: TensorType["batch", "genome_length"]) -> TensorType["batch", "genome_length", "hidden_size"]:
