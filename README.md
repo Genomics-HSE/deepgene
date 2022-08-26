@@ -1,4 +1,4 @@
-# Deepgen library
+# Deepgene library
 
 <p align="center">
     <a href="https://circleci.com/gh/Genomics-HSE/deepgene">
@@ -19,15 +19,20 @@
 
 <!---->
 
-Deepgene is a collection of deep learning models and common datasets for genomics researchers. It is aimed to speed up a working process for 
-people who are not fluent in Deep Learning and who want to play around applying different models for their tasks.  
-
 #### Table of Contents
 
 [TOC]
 ## Motivation 
 
+Deepgene is a collection of deep learning models and common datasets for genomics researchers. It is aimed to speed up a working process for 
+people who are not fluent in Deep Learning and who want to play around applying different models for their tasks. You can
+find a list of available models in [this chapter](https://github.com/Genomics-HSE/deepgene#model-architectures) and
+[this chapter](https://github.com/Genomics-HSE/deepgene#datasets). 
+
 ## Installation
+### Requirements
+This project on a deep learning part relies on pytorch_lightning library and for a generating genomical data relies on 
+msprime. 
 
 ## Quick tour
 
@@ -44,8 +49,8 @@ Three configuration files has to supplied for training DL models:
   <li>train.gin</li>
 </ul>
 
-In `model.gin` all necessary parameters heading by a line `import deepgene.models` for a creation of a choosen model 
-should be provided. 
+All necessary parameters for a creation of a chosen model, a dataset and a trainer should be provided respectively in each file. 
+
 
 
 
