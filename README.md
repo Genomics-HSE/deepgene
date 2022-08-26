@@ -31,8 +31,8 @@ find a list of available models in [this chapter](https://github.com/Genomics-HS
 
 ## Installation
 ### Requirements
-This project on a deep learning part relies on pytorch_lightning library and for a generating genomics data relies on 
-msprime. 
+This project on a deep learning part relies on `pytorch_lightning` library and for a generating genomics data relies on 
+`msprime`. 
 
 ## Quick tour
 
@@ -43,8 +43,8 @@ msprime.
 ## Config files 
 
 Usually for training DL models big amount of parameters have to be set. You can do it by hard-coding them directly inside
-your code but it is not a good practice. The better way is to use separate files which contain 
-configuration parameters outside of your main code.  In our framework three configuration files could to be provided: 
+your code, but it is not a good practice. The better way is to use separate files which contain 
+configuration parameters outside your main code.  In our framework three configuration files could to be provided: 
 <ul>
   <li>model.gin</li>
   <li>data.gin</li>
@@ -53,18 +53,15 @@ configuration parameters outside of your main code.  In our framework three conf
 
 All necessary parameters for a creation of a chosen model, a dataset and a trainer should be provided respectively in each file. 
 
-
+```
+python main.py --model=configs/gru/model.gin --data==configs/gru/data.gin train=configs/gru/train.gin **train**
+```
 
 
 Example of such `.gin` files can be found in `configs` directory.
 
+## Visualization  
+
+
 ## Learn more
 
-## Run it 
-
-```bash
-python main.py --gin_file_train=configs/gru/gru_train.gin \
---gin_file_model=configs/gru/gru_model.gin \
---gin_file_data=configs/gru/gru_data.gin \
---action=train
-```
