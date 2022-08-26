@@ -10,7 +10,8 @@
     <a href="https://github.com/Genomics-HSE/deepgene/releases">
         <img alt="GitHub release" src="https://img.shields.io/github/release/Genomics-HSE/deepgene.svg">
     </a>
-    <a href="https://img.shields.io/github/downloads/genomics-hse/deepgene/total">
+    <a>
+        <img alt="GitHub downloads" src="https://img.shields.io/github/downloads/genomics-hse/deepgene/total">
     </a>
     <a href="https://github.com/huggingface/transformers/blob/main/CODE_OF_CONDUCT.md">
         <img alt="Contributor Covenant" src="https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg">
