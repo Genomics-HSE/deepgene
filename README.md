@@ -48,9 +48,9 @@ Usually for training DL models big amount of parameters have to be set. You can 
 your code, but it is not a good practice. The better way is to use separate files which contain 
 configuration parameters outside your main code.  In our framework three configuration files could to be provided: 
 <ul>
-  <li>`model.gin`</li>
-  <li>`data.gin`</li>
-  <li>`train.gin`</li>
+  <li> `model.gin` </li>
+  <li> `data.gin` </li>
+  <li> `train.gin` </li>
 </ul>
 
 All necessary parameters for a creation of a chosen model, a dataset and a trainer should be provided respectively in each file. 
@@ -73,6 +73,3 @@ Example of such `.gin` files can be found in `configs` directory.
 
 
 ## Learn more
-<a href="https://circleci.com/gh/Genomics-HSE/deepgen">
-        <img alt="Build" src="https://img.shields.io/circleci/build/github/Genomics-HSE/deepgen/main">
-    </a>
