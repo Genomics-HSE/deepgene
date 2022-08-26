@@ -19,7 +19,7 @@
 
 <!---->
 
-Deepgen is a collection of deep learning models and common datasets for genomics researchers. It is aimed to speed up a working process for 
+Deepgene is a collection of deep learning models and common datasets for genomics researchers. It is aimed to speed up a working process for 
 people who are not fluent in Deep Learning and who want to play around applying different models for their tasks.  
 
 #### Table of Contents
@@ -29,11 +29,14 @@ people who are not fluent in Deep Learning and who want to play around applying 
 
 ## Installation
 
-## Quick tour  
+## Quick tour
 
 ## Model architectures
 
 ## Datasets
+
+## Config files 
+
 
 ## Learn more
 
