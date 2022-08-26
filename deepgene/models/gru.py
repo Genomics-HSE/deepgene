@@ -22,7 +22,7 @@ class GruLabeler(CategoricalModel):
                  predictor: Predictor
                  ):
         super().__init__()
-        self.save_hyperparameters()
+        self.save_hyperparameters(ignore=['embedding', 'predictor'])
         self.n_class = n_class
         self.embedding = embedding
         self.gru = nn.GRU(input_size=input_size,

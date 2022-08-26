@@ -1,6 +1,6 @@
 import pytorch_lightning
-import deepgen.models
-import deepgen.data
+import deepgene.models
+import deepgene.data
 
 output = "lstm_const"
 

@@ -1,6 +1,6 @@
 import pytorch_lightning
-import deepgen.models
-import deepgen.data
+import deepgene.models
+import deepgene.data
 
 output = "gru_const/layer4"
 model_name = "GRU-small.ckpt"
@@ -50,7 +50,9 @@ Trainer.max_epochs = 1
 Trainer.enable_checkpointing = False
 Trainer.auto_lr_find = True
 Trainer.logger = @CometLogger()
-Trainer.gpus = 0
+Trainer.accelerator = 'cpu'
+Trainer.devices = None
+
 Trainer.default_root_dir = %output
 Trainer.log_every_n_steps = 1
 Trainer.val_check_interval = 50

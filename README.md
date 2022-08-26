@@ -37,6 +37,19 @@ people who are not fluent in Deep Learning and who want to play around applying 
 
 ## Config files 
 
+Three configuration files has to supplied for training DL models: 
+<ul>
+  <li>model.gin</li>
+  <li>data.gin</li>
+  <li>train.gin</li>
+</ul>
+
+In `model.gin` all necessary parameters heading by a line `import deepgene.models` for a creation of a choosen model 
+should be provided. 
+
+
+
+Example of such `.gin` files can be found in `configs` directory.
 
 ## Learn more
 

@@ -6,37 +6,37 @@
 #GruLabeler.embedding = @Embedding()
 #
 #model:
-#  class_path: deepgen.models.GruLabeler
+#  class_path: deepgene.models.GruLabeler
 #  init_args:
 #    input_size: 1
 #    n_class: 32
 #    hidden_size: 32
 #    num_layers: 4
 #  embedding:
-#    class_path: deepgen.models.NoEmbedding
+#    class_path: deepgene.models.NoEmbedding
 #  predictor:
-#    class_path: deepgen.models.Predictor
+#    class_path: deepgene.models.Predictor
 #    init_args:
 #      d_model: 64
 #      dropout: 0.1
 #      n_class: 32
 
-#class_path: deepgen.models.GruLabeler
+#class_path: deepgene.models.GruLabeler
 #init_args:
 #  input_size: 1
 #  n_class: 32
 #  hidden_size: 32
 #  num_layers: 4
 #embedding:
-#  class_path: deepgen.models.NoEmbedding
+#  class_path: deepgene.models.NoEmbedding
 #predictor:
-#  class_path: deepgen.models.Predictor
+#  class_path: deepgene.models.Predictor
 #  init_args:
 #    d_model: 64
 #    dropout: 0.1
 #    n_class: 32
 
-class_path: deepgen.models.Mock
+class_path: deepgene.models.Mock
 init_args:
   a: 1
   b: 2
@@ -49,7 +49,7 @@ init_args:
 
 #
 #embedding:
-#  class_path: deepgen.models.NoEmbedding
+#  class_path: deepgene.models.NoEmbedding
 #
 #
 #ConvEmbedding:
