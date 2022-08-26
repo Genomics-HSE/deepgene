@@ -5,8 +5,11 @@
 <!---->
 
 Deepgen is a collection of deep learning models for genomics researchers. It is aimed to speed up a working process for 
-biologists who are not fluent in Deep learning and who want to play around applying different models for their tasks.  
+people who are not fluent in Deep learning and who want to play around applying different models for their tasks.  
 
+#### Table of Contents
+
+[TOC]
 
 ## Run it 
 
