@@ -31,7 +31,7 @@ find a list of available models in [this chapter](https://github.com/Genomics-HS
 
 ## Installation
 ### Requirements
-This project on a deep learning part relies on pytorch_lightning library and for a generating genomical data relies on 
+This project on a deep learning part relies on pytorch_lightning library and for a generating genomics data relies on 
 msprime. 
 
 ## Quick tour
@@ -42,7 +42,9 @@ msprime.
 
 ## Config files 
 
-Three configuration files has to supplied for training DL models: 
+Usually for training DL models big amount of parameters have to be set. You can do it by hard-coding them directly inside
+your code but it is not a good practice. The better way is to use separate files which contain 
+configuration parameters outside of your main code.  In our framework three configuration files could to be provided: 
 <ul>
   <li>model.gin</li>
   <li>data.gin</li>
