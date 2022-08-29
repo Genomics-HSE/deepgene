@@ -2,7 +2,7 @@
 
 <p align="center">
     <a href="https://circleci.com/gh/Genomics-HSE/deepgene">
-        <img alt="Build" src="https://img.shields.io/circleci/build/github/Genomics-HSE/deepgene/main">
+        <img alt="Build" src="https://img.shields.io/circleci/build/github/Genomics-HSE/deepgene/">
     </a>
     <a href="https://github.com/Genomics-HSE/deepgene/blob/main/LICENSE">
         <img alt="GitHub" src="https://img.shields.io/github/license/Genomics-HSE/deepgene.svg?color=blue">
