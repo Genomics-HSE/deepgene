@@ -26,7 +26,7 @@
 [TOC]
 ## Motivation 
 
-Deepgene is a collection of deep learning models and common datasets for genomics researchers. It is aimed to speed up a working process for 
+Deepgene is a collection of deep learning models and population demography datasets for genomics researchers. It is aimed to speed up a working process for 
 people who are not fluent in Deep Learning and who want to play around applying different models for their tasks. You can
 find a list of available models in [this chapter](https://github.com/Genomics-HSE/deepgene#model-architectures) and
 [this chapter](https://github.com/Genomics-HSE/deepgene#datasets). 
