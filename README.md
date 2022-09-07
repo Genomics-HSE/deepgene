@@ -42,6 +42,24 @@ This project on a deep learning part relies on `pytorch_lightning` library and f
 
 ## Datasets
 
+For example, you have a classification task when you need to learn a mapping from `X -> y`.
+Your `X` data could look like `np.random.rand(1, 3)`, i.e. an array of three numbers, and
+`y` just a random true value `np.random.randint(0, 2)`. To create a dataset that can be used in 
+for training a neural network several steps have to be accomplished:
+
+- Create a `generator` python object that can supply a data instances:
+```python
+import numpy as np
+def dummy_generator(shape=(1, 3)):
+    while True:
+        yield np.random.rand(*shape), np.random.randint(0, 2)
+
+generator = dummy_generator
+X, y = next(generator)
+```
+
+
+
 ## Config files 
 
 Usually for training DL models big amount of parameters have to be set. You can do it by hard-coding them directly inside
@@ -62,7 +80,7 @@ python main.py --model=configs/gru/model.gin --data==configs/gru/data.gin train=
 or 
 
 ```
-python main.py --model=configs/gru/model.gin --data==configs/gru/data.gin train=configs/gru/train.gin test
+python main.py --model=configs/gru/model.gin --data==configs/gru/data.gin --train=configs/gru/train.gin test
 ```
 
 Example of such `.gin` files can be found in `configs` directory.
