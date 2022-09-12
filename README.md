@@ -114,12 +114,11 @@ configuration parameters outside your main code.  In our framework three configu
 
 All necessary parameters for a creation of a chosen model, a dataset and a trainer should be provided respectively in each file. 
 
+```python
+python main.py --model=configs/min-config-gru/model.gin --data=configs/min-config-gru/data.gin --train=configs/min-config-gru/train.gin fit
 ```
-python main.py --model=configs/min-config-gru/model.gin --data=configs/min-config-gru/data.gin --train=configs/min-config-gru/train.gin fit```
-
 or 
-
-```
+```python
 python main.py --model=configs/min-config-gru/model.gin --data=configs/min-config-gru/data.gin --train=configs/min-config-gru/train.gin test
 ```
 

@@ -3,6 +3,7 @@ from os.path import join
 
 import torch
 from pytorch_lightning import Trainer, LightningModule, LightningDataModule
+from pytorch_lightning.loggers.comet import CometLogger
 from tqdm import tqdm
 import transformers
 
@@ -24,7 +25,8 @@ def fit_model(trainer: Trainer,
     print("Saving the model to ", checkpoint_path)
     trainer.save_checkpoint(checkpoint_path)
     print(trainer.checkpoint_callback.best_model_path)
-    if trainer.logger is not None:
+
+    if type(trainer.logger) == CometLogger:
         trainer.logger.experiment.log_model(name="best_model",
                                             file_or_folder=trainer.checkpoint_callback.best_model_path)
 

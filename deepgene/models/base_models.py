@@ -10,7 +10,7 @@ from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from matplotlib import pyplot as plt
 from torchtyping import TensorType, patch_typeguard
 from typeguard import typechecked
-
+from pytorch_lightning.loggers.comet import CometLogger
 from deepgene.utils import create_heatmap, create_dist_plot
 
 patch_typeguard()
@@ -61,25 +61,27 @@ class CategoricalModel(LightningModule):
 
         y_pred = y_pred.cpu()
         y_true = y_true.cpu()
-        heatmap = create_heatmap(y_pred, y_true, 3000)
-        self.logger.experiment.log_figure(figure_name="heatmap", step=self.val_step_counter)  # heatmap upload
-        plt.close()
 
-        conf_matrix = confusion_matrix(y_true=y_true.long(),
-                                       y_pred=torch.argmax(y_pred, dim=-1).long())
-        self.logger.experiment.log_confusion_matrix(y_true=y_true.long(),
-                                                    y_predicted=torch.argmax(y_pred, dim=-1).long())
-        dist = create_dist_plot(y_pred, y_true)
-        self.logger.experiment.log_figure(figure_name="dist", step=self.val_step_counter)  # heatmap upload
-        plt.close()
+        if type(self.logger) == CometLogger:
+            heatmap = create_heatmap(y_pred, y_true, 3000)
+            self.logger.experiment.log_figure(figure_name="heatmap", step=self.val_step_counter)  # heatmap upload
+            plt.close()
 
-        ConfusionMatrixDisplay.from_predictions(y_true.long(),
-                                                torch.argmax(y_pred, dim=-1).long(),
-                                                labels=np.arange(self.n_class),
-                                                include_values=False,
-                                                normalize='true')
-        self.logger.experiment.log_figure(figure_name="confusion", step=self.val_step_counter)  # heatmap upload
-        plt.close()
+            conf_matrix = confusion_matrix(y_true=y_true.long(),
+                                           y_pred=torch.argmax(y_pred, dim=-1).long())
+            self.logger.experiment.log_confusion_matrix(y_true=y_true.long(),
+                                                        y_predicted=torch.argmax(y_pred, dim=-1).long())
+            dist = create_dist_plot(y_pred, y_true)
+            self.logger.experiment.log_figure(figure_name="dist", step=self.val_step_counter)  # heatmap upload
+            plt.close()
+
+            ConfusionMatrixDisplay.from_predictions(y_true.long(),
+                                                    torch.argmax(y_pred, dim=-1).long(),
+                                                    labels=np.arange(self.n_class),
+                                                    include_values=False,
+                                                    normalize='true')
+            self.logger.experiment.log_figure(figure_name="confusion", step=self.val_step_counter)  # heatmap upload
+            plt.close()
 
         self.val_step_counter += 1
 
