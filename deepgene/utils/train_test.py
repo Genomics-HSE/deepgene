@@ -7,30 +7,26 @@ from tqdm import tqdm
 import transformers
 
 
-def train_model(trainer: Trainer,
-                model: LightningModule,
-                data_module: LightningDataModule,
-                output: str,
-                model_name: str,
-                resume: bool,
-                configs: dict
-                ):
+def fit_model(trainer: Trainer,
+              model: LightningModule,
+              data_module: LightningDataModule,
+              output: str,
+              model_name: str,
+              configs: dict
+              ):
     print("Running {}-model...".format(model.name))
 
-    #trainer.logger.experiment.log_parameters(configs)
+    # trainer.logger.experiment.log_parameters(configs)
 
-    if resume:
-        # load model
-        trainer.fit(model=model, datamodule=data_module)
-    else:
-        trainer.fit(model=model, datamodule=data_module)
+    trainer.fit(model=model, datamodule=data_module)
 
     checkpoint_path = join(output, model_name)
     print("Saving the model to ", checkpoint_path)
     trainer.save_checkpoint(checkpoint_path)
     print(trainer.checkpoint_callback.best_model_path)
-    trainer.logger.experiment.log_model(name="best_model",
-                                        file_or_folder=trainer.checkpoint_callback.best_model_path)
+    if trainer.logger is not None:
+        trainer.logger.experiment.log_model(name="best_model",
+                                            file_or_folder=trainer.checkpoint_callback.best_model_path)
 
     return trainer, model
 

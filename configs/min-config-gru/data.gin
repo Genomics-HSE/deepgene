@@ -1,0 +1,30 @@
+import deepgene.data
+
+
+##########################
+#  Data
+##########################
+
+get_liner_generator.num_genomes = 1000
+get_liner_generator.genome_length = %seq_len
+get_liner_generator.num_generators = 100
+get_liner_generator.return_local_times = True
+get_liner_generator.return_full_dist = False
+get_liner_generator.genome_postproccessor = @do_filter
+get_liner_generator.times_postproccessor = @do_filter_2
+get_liner_generator.demographic_events_generator = @get_const_demographcs
+
+DatasetXY.num_workers = 8
+DatasetXY.batch_size = 64
+DatasetXY.train_generator = @train/get_liner_generator()
+train/get_liner_generator.random_seed = 11
+
+DatasetXY.val_generator = @val/get_liner_generator()
+val/get_liner_generator.random_seed = 22
+val/get_liner_generator.num_genomes = 400
+val/get_liner_generator.num_generators = 10
+
+DatasetXY.test_generator = @test/get_liner_generator()
+test/get_liner_generator.random_seed = 33
+test/get_liner_generator.num_genomes = 10
+test/get_liner_generator.num_generators = 10

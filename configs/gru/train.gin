@@ -9,12 +9,12 @@ seq_len = 3_000
 ##########################
 #  Training
 ##########################
-train_model.model = @GruLabeler()
-train_model.trainer = @Trainer()
-train_model.data_module = @DatasetXY()
-train_model.resume = False
-train_model.output = %output
-train_model.model_name = %model_name
+fit_model.model = @GruLabeler()
+fit_model.trainer = @Trainer()
+fit_model.data_module = @DatasetXY()
+fit_model.resume = False
+fit_model.output = %output
+fit_model.model_name = %model_name
 
 Trainer.max_epochs = 1
 Trainer.enable_checkpointing = True

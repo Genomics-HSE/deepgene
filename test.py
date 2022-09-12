@@ -3,9 +3,9 @@ import gin
 import numpy as np
 import torch
 import pytorch_lightning
-from deepgen.models import GruLabeler
-from deepgen.data import DatasetXY
-from deepgen.utils import train_model, test_model
+from deepgene.models import GruLabeler
+from deepgene.data import DatasetXY
+from deepgene.utils import train_model, test_model
 from tqdm import tqdm
 
 

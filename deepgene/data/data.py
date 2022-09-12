@@ -11,6 +11,15 @@ from torch.utils import data
 from torch.utils.data import DataLoader
 
 
+class DatasetTorch(data.IterableDataset):
+    def __init__(self, data_generator):
+        super(DatasetTorch, self).__init__()
+        self.data_generator = data_generator
+
+    def __iter__(self):
+        return self.data_generator
+
+
 class DatasetXY(pl.LightningDataModule):
     def __init__(self,
                  train_generator,
@@ -20,14 +29,14 @@ class DatasetXY(pl.LightningDataModule):
                  num_workers: int,
                  ):
         super(DatasetXY, self).__init__()
-        
+
         self.batch_size = batch_size
         self.num_workers = num_workers
 
         self.train_dataset = DatasetTorch(train_generator)
         self.val_dataset = DatasetTorch(val_generator)
         self.test_dataset = DatasetTorch(test_generator)
-    
+
     def train_dataloader(self, *args, **kwargs) -> DataLoader:
         return DataLoader(self.train_dataset,
                           collate_fn=collate_xy,
@@ -41,14 +50,14 @@ class DatasetXY(pl.LightningDataModule):
                           batch_size=self.batch_size,
                           num_workers=self.num_workers,
                           )
-    
+
     def test_dataloader(self, *args, **kwargs) -> Union[DataLoader, List[DataLoader]]:
         return DataLoader(self.test_dataset,
                           collate_fn=collate_xy,
                           batch_size=1,
                           num_workers=self.num_workers,
                           )
-    
+
 
 def collate_xy(batch):
     X = [torch.Tensor(item[0]) for item in batch]
@@ -68,34 +77,29 @@ def collate_xyz(batch):
     return X, Y, Z
 
 
-
-class DatasetTorch(data.IterableDataset):
-    def __init__(self, data_generator):
-        super(DatasetTorch, self).__init__()
-        self.data_generator = data_generator
-    
-    def __iter__(self):
-        return self.data_generator
-
-
 def one_hot_encoding_numpy(y_data, num_class):
     return (np.arange(num_class) == y_data[..., None]).astype(np.float32)
 
 
+def dummy_generator(shape=(1, 3)):
+    while True:
+        yield np.random.rand(*shape), np.random.randint(0, 2)
+
+
+class DummyDataset(DatasetXY):
+    def __init__(self, data_shape=(1, 3), batch_size=8, num_workers=8):
+        train_generator = dummy_generator(data_shape)
+        val_generator = dummy_generator(data_shape)
+        test_generator = dummy_generator(data_shape)
+
+        super(DummyDataset, self).__init__(
+            train_generator=train_generator,
+            val_generator=val_generator,
+            test_generator=test_generator,
+            batch_size=batch_size,
+            num_workers=num_workers
+        )
+
+
 if __name__ == '__main__':
-    from data_gen_np import get_liner_generator
-    
-    generator = get_liner_generator(num_genomes=2,
-                                    genome_length=10,
-                                    num_generators=2)
-    
-    dataset = DatasetTorch(generator)
-    
-    # for x, y in dataset:
-    #     print(x, y)
-    
-    loader = DataLoader(dataset, batch_size=2)
-    for x, y, z in loader:
-        print(len(x))
-        print(len(y))
-        print(len(z))
+    pass

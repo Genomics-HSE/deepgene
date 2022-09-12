@@ -5,7 +5,7 @@ import torch.nn.functional as F
 from pytorch_lightning import LightningModule
 from .base_models import CategoricalModel, OrdinalModel
 
-from deepgen.loss import KLDivLoss, CrossEntropyLoss, EMD_squared_loss, CTC_loss, MYLOSS
+from deepgene.loss import KLDivLoss, CrossEntropyLoss, EMD_squared_loss, CTC_loss, MYLOSS
 
 
 class SimpleLabeler(CategoricalModel):

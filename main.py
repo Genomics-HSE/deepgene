@@ -1,11 +1,9 @@
-import sys
-
 import comet_ml
 import time
 import signal
 import gin
+from deepgene.utils import fit_model, test_model
 import argparse
-from deepgen.utils import train_model, test_model
 
 
 def handler(signum, frame):
@@ -17,23 +15,27 @@ signal.signal(signal.SIGUSR1, handler)
 signal.signal(signal.SIGTERM, handler)
 signal.signal(signal.SIGINT, handler)
 
+
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(prog='Genomics')
-    parser.add_argument("--config", type=str, default="")
-    action_parsers = parser.add_subparsers(title='actions', dest='action')
-    train_parser = action_parsers.add_parser('train')
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--model", type=str)
+    parser.add_argument("--data", type=str)
+    parser.add_argument("--train", type=str)
+    parser.add_argument("--gin_param", action="append")
 
-    predict_parser = action_parsers.add_parser('test')
-    predict_parser.add_argument('--path', type=str)
+    subparsers = parser.add_subparsers(dest="action")  # this line changed
+    train_parser = subparsers.add_parser('fit')
+    test_parser = subparsers.add_parser('test')
+
     args = parser.parse_args()
+    print(args)
+    gin.parse_config_files_and_bindings([args.model, args.data, args.train], args.gin_param)
+    #print(gin.config._CONFIG)
 
-    print(args.config)
-    gin.parse_config_file(args.config)
-
-    print(gin.config._CONFIG)
-    if args.action == "train":
-        train_model(configs=gin.config._CONFIG)
+    if args.action == "fit":
+        fit_model(configs=gin.config._CONFIG)
     elif args.action == "test":
         test_model()
     else:
-        ValueError("Choose train or predict")
+        raise ValueError("fit or predict")
+

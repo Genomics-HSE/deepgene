@@ -11,7 +11,7 @@ from matplotlib import pyplot as plt
 from torchtyping import TensorType, patch_typeguard
 from typeguard import typechecked
 
-from deepgen.utils import create_heatmap, create_dist_plot
+from deepgene.utils import create_heatmap, create_dist_plot
 
 patch_typeguard()
 

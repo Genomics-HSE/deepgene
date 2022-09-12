@@ -6,7 +6,7 @@ import transformers
 from pytorch_lightning import LightningModule
 from .base_models import CategoricalModel, OrdinalModel
 
-from deepgen.loss import CrossEntropyLoss, KLDivLoss, EMD_squared_loss, FocalLoss
+from deepgene.loss import CrossEntropyLoss, KLDivLoss, EMD_squared_loss, FocalLoss
 
 
 class ReformerLabeler(transformers.ReformerModel, CategoricalModel):

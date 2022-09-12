@@ -1,0 +1,29 @@
+import deepgene.models
+
+
+##########################
+#  Model
+##########################
+
+#GruLabeler.embedding = @ConvEmbedding() #Embedding
+#GruLabeler.embedding = @Embedding()
+GruLabeler.embedding = @NoEmbedding()
+
+Embedding.num_embeddings = 2
+Embedding.embedding_dim = %n_class
+
+ConvEmbedding.n_layers = 4
+ConvEmbedding.in_channels = 1
+ConvEmbedding.out_channels = %n_class
+ConvEmbedding.kernel_size = 31
+ConvEmbedding.stride = 1
+
+GruLabeler.input_size = 1
+GruLabeler.n_class = %n_class
+GruLabeler.hidden_size = %n_class
+GruLabeler.num_layers = 4
+
+GruLabeler.predictor = @Predictor()
+Predictor.d_model = 64
+Predictor.dropout = 0.1
+Predictor.n_class = %n_class

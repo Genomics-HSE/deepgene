@@ -8,7 +8,7 @@ from torchtyping import TensorType, patch_typeguard
 from typeguard import typechecked
 
 from .base_models import CategoricalModel, OrdinalModel, ConvEmbedding, NoEmbedding, Predictor
-from deepgen.loss import KLDivLoss, CrossEntropyLoss, EMD_squared_loss, CTC_loss, MYLOSS
+from deepgene.loss import KLDivLoss, CrossEntropyLoss, EMD_squared_loss, CTC_loss, MYLOSS
 
 patch_typeguard()
 

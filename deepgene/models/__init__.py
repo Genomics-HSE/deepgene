@@ -11,6 +11,7 @@ from .lstm import LstmLabeler
 from .reformer import ReformerLabeler, ReformerPreTrainerLM
 from .simple import SimpleLabeler, WindowSlider
 from .base_models import Predictor, OrdinalHead, CategoricalModel
+from .dummy_model import DummyModel
 
 
 ReformerConfig = gin.external_configurable(ReformerConfig)
