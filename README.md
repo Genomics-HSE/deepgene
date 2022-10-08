@@ -18,8 +18,10 @@
     </a>
 </p>
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Genomics-HSE/deepgene/master/przhevalsky_horse.jpg" alt="Sublime's custom image"/>
+  <img src="https://raw.githubusercontent.com/Genomics-HSE/deepgene/master/przhevalsky_horse.jpg" alt="horse"/>
 </p>
+
+_Przewalski's horses_ 
 <!---->
 
 #### Table of Contents
