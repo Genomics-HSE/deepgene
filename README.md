@@ -18,7 +18,7 @@
     </a>
 </p>
                                          
-![]([https://raw.githubusercontent.com/HSE-LAMBDA/roerich/main/images/700125v1.jpeg](https://raw.githubusercontent.com/Genomics-HSE/deepgene/master/przhevalsky_horse.jpg))
+![](https://raw.githubusercontent.com/Genomics-HSE/deepgene/master/przhevalsky_horse.jpg)
 _Przewalski's horses_
                                          
 **Authors**: Kenenber Arzymatov, Evgeniy Khomutov and Vladimir Schur
