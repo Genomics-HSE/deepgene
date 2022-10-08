@@ -17,10 +17,12 @@
         <img alt="Contributor Covenant" src="https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg">
     </a>
 </p>
+<p align="center">
                                          
 ![](https://raw.githubusercontent.com/Genomics-HSE/deepgene/master/przhevalsky_horse.jpg) 
 
-_Przewalski's horses_                                         
+_Przewalski's horses_ 
+</p>
 <!---->
 #### Table of Contents
 [TOC]
