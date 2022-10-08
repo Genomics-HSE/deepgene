@@ -17,10 +17,13 @@
         <img alt="Contributor Covenant" src="https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg">
     </a>
     
-  <img alt=" _Przewalski's horse", 1933_" src=https://raw.githubusercontent.com/Genomics-HSE/deepgene/master/przhevalsky_horse.jpg>    
+  <img alt="Przewalski's horse" src=https://raw.githubusercontent.com/Genomics-HSE/deepgene/master/przhevalsky_horse.jpg>    
 
 </p>
-
+                                         
+![]([https://raw.githubusercontent.com/HSE-LAMBDA/roerich/main/images/700125v1.jpeg](https://raw.githubusercontent.com/Genomics-HSE/deepgene/master/przhevalsky_horse.jpg))
+_Przewalski's horses_
+                                         
 **Authors**: Kenenber Arzymatov, Evgeniy Khomutov and Vladimir Schur
 
 <!---->
