@@ -21,10 +21,8 @@
 ![](https://raw.githubusercontent.com/Genomics-HSE/deepgene/master/przhevalsky_horse.jpg) 
 
 _Przewalski's horses_                                         
-**Authors**: Kenenber Arzymatov, Evgeniy Khomutov and Vladimir Schur
 <!---->
 #### Table of Contents
-
 [TOC]
 ## Motivation 
 
@@ -150,3 +148,6 @@ Example of such `.gin` files can be found in `configs` directory.
 
 
 ## Learn more
+
+**Authors**: Kenenber Arzymatov, Evgeniy Khomutov and Vladimir Schur
+
