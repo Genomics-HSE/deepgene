@@ -88,13 +88,31 @@ model = DummyModel()
 
 The full list of training parameters are available on pytorch-lightning official [documentation](https://pytorch-lightning.readthedocs.io/en/stable/common/trainer.html#trainer-class-api). 
 
+```python
+trainer = Trainer(
+        max_steps=10,
+        enable_checkpointing=True,
+        auto_lr_find=True,
+        default_root_dir=".",
+        log_every_n_steps=1,
+        val_check_interval=5,
+        limit_val_batches=1,
+    )
+```
 
 ### Fit a model 
 
+Finally, fit a model: 
+
+```python
+trainer.fit(model, datamodule)
+```
 
 ### Use config files
 
 ## Model architectures
+
+### GRULabeler / LSTMLabeler
 
 ## Datasets
 
