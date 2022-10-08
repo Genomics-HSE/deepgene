@@ -11,7 +11,7 @@
         <img alt="GitHub release" src="https://img.shields.io/github/release/Genomics-HSE/deepgene.svg">
     </a>
     <a>
-        <img alt="GitHub downloads" src="https://img.shields.io/github/downloads/genomics-hse/deepgene/total">
+        <img alt="Downloads" src="https://static.pepy.tech/personalized-badge/deepgene?     period=total&units=international_system&left_color=black&right_color=orange&left_text=Downloads">
     </a>
     <a href="https://github.com/huggingface/transformers/blob/main/CODE_OF_CONDUCT.md">
         <img alt="Contributor Covenant" src="https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg">
