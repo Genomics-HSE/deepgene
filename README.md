@@ -17,8 +17,8 @@
         <img alt="Contributor Covenant" src="https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg">
     </a>
     
-    <img alt="Contributor Covenant" src=https://raw.githubusercontent.com/Genomics-HSE/deepgene/master/przhevalsky_horse.jpg>    
-     _Przewalski's horse", 1933_
+  <img alt=" _Przewalski's horse", 1933_" src=https://raw.githubusercontent.com/Genomics-HSE/deepgene/master/przhevalsky_horse.jpg>    
+
 </p>
 
 **Authors**: Kenenber Arzymatov, Evgeniy Khomutov and Vladimir Schur
