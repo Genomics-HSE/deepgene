@@ -16,6 +16,9 @@
     <a href="https://github.com/huggingface/transformers/blob/main/CODE_OF_CONDUCT.md">
         <img alt="Contributor Covenant" src="https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg">
     </a>
+    
+    ![](https://raw.githubusercontent.com/Genomics-HSE/deepgene/master/przhevalsky_horse.jpg)
+     _Przewalski's horse", 1933_
 </p>
 
 **Authors**: Kenenber Arzymatov, Evgeniy Khomutov and Vladimir Schur
