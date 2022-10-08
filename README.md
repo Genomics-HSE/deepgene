@@ -19,6 +19,7 @@
 </p>
                                          
 ![](https://raw.githubusercontent.com/Genomics-HSE/deepgene/master/przhevalsky_horse.jpg)
+
 _Przewalski's horses_
                                          
 **Authors**: Kenenber Arzymatov, Evgeniy Khomutov and Vladimir Schur
