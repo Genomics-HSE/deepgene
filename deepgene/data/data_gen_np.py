@@ -147,6 +147,19 @@ def get_test_demographcs(population: int = 10_000, random_seed: int = 42) -> 'ms
     return demography
 
 
+def get_test_demographcs_2(population: int = 10_000, random_seed: int = 42) -> 'msprime.Demography':
+    demography = msprime.Demography()
+
+    demography.add_population(name="A", initial_size=initial_size)
+    for i in range(32):
+        demography.add_population_parameters_change(i*1_000, initial_size=((.5 + 0.5*i%2)* initial_size))
+
+    demography.add_population_parameters_change(40_000, initial_size=1. * initial_size)
+    demography.add_population_parameters_change(80_000, initial_size=2. * initial_size)
+
+    return demography
+
+
 def simple_split(time: float, N: int, split_const: int = 5000) -> int:
     return int(min(time // split_const, N - 1))
 
