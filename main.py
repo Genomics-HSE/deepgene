@@ -33,7 +33,8 @@ if __name__ == '__main__':
     #print(gin.config._CONFIG)
 
     if args.action == "fit":
-        fit_model(configs=gin.config._CONFIG)
+        fit_model(configs=gin.config._CONFIG,
+                  config_files=(args.model, args.data, args.train))
     elif args.action == "test":
         test_model()
     else:

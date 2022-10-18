@@ -1,9 +1,6 @@
 #import pytorch_lightning
 
-output = "gru_const/layer4"
-model_name = "GRU-small.ckpt"
-n_class = 32
-seq_len = 3_000
+output = "gru_const/run3"
 
 
 ##########################
@@ -12,15 +9,16 @@ seq_len = 3_000
 fit_model.model = @GruLabeler()
 fit_model.trainer = @Trainer()
 fit_model.data_module = @DatasetXY()
-fit_model.resume = False
 fit_model.output = %output
 fit_model.model_name = %model_name
+
+Trainer.accelerator = 'gpu'
+Trainer.devices = 1
 
 Trainer.max_epochs = 1
 Trainer.enable_checkpointing = True
 Trainer.auto_lr_find = True
 Trainer.logger = @CometLogger()
-Trainer.gpus = 0
 Trainer.default_root_dir = %output
 Trainer.log_every_n_steps = 1
 Trainer.val_check_interval = 50
@@ -34,7 +32,7 @@ ModelCheckpoint.save_top_k = 3
 ModelCheckpoint.mode = "min"
 
 CometLogger.workspace = "kenenbek"
-CometLogger.project_name = "deepgen"
+CometLogger.project_name = "deepgene"
 CometLogger.save_dir = %output
 
 ##########################
@@ -43,10 +41,6 @@ CometLogger.save_dir = %output
 test_model.trainer = @Trainer()
 test_model.datamodule = @DatasetXY()
 test_model.test_output = %output
-
-#get_const_demographcs
-#get_test_demographcs
-#get_demographcs_from_ms_command
 
 
 ##########################

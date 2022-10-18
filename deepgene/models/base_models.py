@@ -44,7 +44,7 @@ class CategoricalModel(LightningModule):
         #
         # loss2 = F.kl_div(log_probs, prob_targets, reduction='mean')
         # loss = loss1 + loss2
-        self.log("train_loss", loss1, on_step=True, logger=True, prog_bar=True)
+        # self.log("x", loss1, on_step=True, logger=True, prog_bar=True)
         return loss1
 
     @typechecked
@@ -53,7 +53,7 @@ class CategoricalModel(LightningModule):
         x_batch, y_batch = batch
         logits = self.forward(x_batch)
         loss1 = self.loss1(logits, y_batch)
-        self.log("val_loss", loss1, on_step=True, logger=True, prog_bar=True)
+        self.log("val_loss", loss1, on_step=False, logger=True, prog_bar=True)
 
         # plot image
         x_true, y_true = x_batch[0], y_batch[0]
@@ -62,7 +62,7 @@ class CategoricalModel(LightningModule):
         y_pred = y_pred.cpu()
         y_true = y_true.cpu()
 
-        if type(self.logger) == CometLogger:
+        if isinstance(self.logger, CometLogger):
             heatmap = create_heatmap(y_pred, y_true, 3000)
             self.logger.experiment.log_figure(figure_name="heatmap", step=self.val_step_counter)  # heatmap upload
             plt.close()

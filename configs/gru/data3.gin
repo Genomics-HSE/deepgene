@@ -14,12 +14,12 @@ get_liner_generator.return_local_times = True
 get_liner_generator.return_full_dist = False
 get_liner_generator.genome_postproccessor = @do_filter
 get_liner_generator.times_postproccessor = @do_filter_2
-get_liner_generator.demographic_events_generator = @get_const_demographcs
+get_liner_generator.demographic_events_generator = @get_test_demographcs_2
 
 DatasetXY.num_workers = 8
 DatasetXY.batch_size = 64
 DatasetXY.train_generator = @train/get_liner_generator()
-train/get_liner_generator.random_seed = 6707281
+train/get_liner_generator.random_seed = 98786523
 
 DatasetXY.val_generator = @val/get_liner_generator()
 val/get_liner_generator.random_seed = 22
@@ -30,3 +30,7 @@ DatasetXY.test_generator = @test/get_liner_generator()
 test/get_liner_generator.random_seed = 33
 test/get_liner_generator.num_genomes = 10
 test/get_liner_generator.num_generators = 10
+
+#get_const_demographcs
+#get_test_demographcs
+#get_demographcs_from_ms_command

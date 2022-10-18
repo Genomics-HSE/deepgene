@@ -1,5 +1,6 @@
 import deepgene.models
 
+model_name = "GRU.ckpt"
 
 ##########################
 #  Model

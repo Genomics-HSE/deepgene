@@ -6,6 +6,7 @@ from pytorch_lightning import Trainer, LightningModule, LightningDataModule
 from pytorch_lightning.loggers.comet import CometLogger
 from tqdm import tqdm
 import transformers
+from typing import Tuple
 
 
 def fit_model(trainer: Trainer,
@@ -13,11 +14,14 @@ def fit_model(trainer: Trainer,
               data_module: LightningDataModule,
               output: str,
               model_name: str,
-              configs: dict
+              configs: dict,
+              config_files: Tuple[str]
               ):
-    print("Running {}-model...".format(model.name))
 
-    # trainer.logger.experiment.log_parameters(configs)
+    print("Running {}-model...".format(model.name))
+    trainer.logger.experiment.log_code(config_files[0])
+    trainer.logger.experiment.log_code(config_files[1])
+    trainer.logger.experiment.log_code(config_files[2])
 
     trainer.fit(model=model, datamodule=data_module)
 
@@ -26,7 +30,7 @@ def fit_model(trainer: Trainer,
     trainer.save_checkpoint(checkpoint_path)
     print(trainer.checkpoint_callback.best_model_path)
 
-    if type(trainer.logger) == CometLogger:
+    if isinstance(trainer.logger, CometLogger):
         trainer.logger.experiment.log_model(name="best_model",
                                             file_or_folder=trainer.checkpoint_callback.best_model_path)
 
