@@ -151,5 +151,5 @@ Example of such `.gin` files can be found in `configs` directory.
 
 ## Learn more
 
-**Authors**: Kenenber Arzymatov, Evgeniy Khomutov and Vladimir Schur
+**Authors**: Kenenber Arzymatov, Evgeniy Khomutov and Vladimir Shchur
 
