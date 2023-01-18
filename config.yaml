@@ -1,0 +1,90 @@
+seed_everything: null
+ckpt_path: "kotok"
+
+trainer:
+  logger:
+    class_path: pytorch_lightning.loggers.comet.CometLogger
+    init_args:
+      workspace: "kenenbek"
+      project_name: "deepgene"
+      save_dir: *output
+  enable_checkpointing: true
+  callbacks:
+    class_path: pytorch_lightning.callbacks.ModelCheckpoint
+    init_args:
+      monitor: "val_loss"
+      dirpath: *output
+      filename: "gru-{val_loss:.2f}"
+      save_top_k: 3
+      mode: "min"
+
+  default_root_dir: *output
+  gpus: 0
+  max_epochs: 1
+  limit_val_batches: 1
+  val_check_interval: 50
+  log_every_n_steps: 10
+  auto_lr_find: true
+model:
+  class_path: deepgene.models.GruLabeler
+  init_args:
+    embedding:
+      class_path: deepgene.models.NoEmbedding
+    n_class: 32
+    input_size: 1
+    hidden_size: 32
+    num_layers: 1
+    predictor:
+      class_path: deepgene.models.Predictor
+      init_args:
+        d_model: 64
+        dropout: 0.1
+        n_class: 32
+data:
+  class_path: deepgene.data.DatasetXY
+  init_args:
+    train_generator:
+      class_path: deepgene.data.get_liner_generator
+      init_args:
+        random_seed: 11
+        num_genomes: 1000
+        genome_length: *seq_len
+        num_generators: 100
+        return_local_times: true
+        return_full_dist: false
+        genome_postproccessor: "do_filter"
+        times_postproccessor: "do_filter_2"
+        demographic_events_generator:
+          class_path: deepgene.data.get_const_demographcs
+    val_generator:
+      class_path: deepgene.data.get_liner_generator
+      init_args:
+        random_seed: 11
+        num_genomes: 1000
+        genome_length: *seq_len
+        num_generators: 100
+        return_local_times: true
+        return_full_dist: false
+        genome_postproccessor:
+          class_path: deepgene.data.do_filter
+        times_postproccessor:
+          class_path: deepgene.data.do_filter_2
+        demographic_events_generator:
+          class_path: deepgene.data.get_const_demographcs
+    test_generator:
+      class_path: deepgene.data.get_liner_generator
+      init_args:
+        random_seed: 11
+        num_genomes: 1000
+        genome_length: *seq_len
+        num_generators: 100
+        return_local_times: true
+        return_full_dist: false
+        genome_postproccessor:
+          class_path: deepgene.data.do_filter
+        times_postproccessor:
+          class_path: deepgene.data.do_filter_2
+        demographic_events_generator:
+          class_path: deepgene.data.get_const_demographcs
+    batch_size: 8
+    num_workers: 8
