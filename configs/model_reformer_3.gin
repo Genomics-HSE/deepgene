@@ -1,0 +1,56 @@
+import deepgene.models
+
+model_name = "%model_name"
+
+##########################
+#  Model
+##########################
+
+#ReformerLabeler.embedding = @Embedding()
+#ReformerPreTrainerLM.embedding = @Embedding()
+
+#Embedding.num_embeddings = 3
+#Embedding.embedding_dim = 32
+
+ReformerLabeler.embedding = @NoEmbedding()
+
+ConvEmbedding.n_layers = 4
+ConvEmbedding.in_channels = 1
+ConvEmbedding.out_channels = 32
+ConvEmbedding.kernel_size = 21
+ConvEmbedding.stride = 1
+
+ReformerLabeler.config = @ReformerConfig()
+ReformerLabeler.loss = %loss_function
+
+ReformerConfig.attention_head_size = 32
+#ReformerConfig.attn_layers = ["local", "lsh", "local", "lsh", "local", "lsh"]
+ReformerConfig.attn_layers = ["lsh", "lsh", "lsh"]
+ReformerConfig.axial_pos_embds_dim = [16, 16]  # sum is equal to hidden_size (32), optimized for better distribution
+ReformerConfig.axial_pos_shape = [150, 200]  # product = 30,000, MUST equal actual sequence length after do_filter (3M/100 = 30K)
+ReformerConfig.chunk_size_lm_head = 0
+ReformerConfig.eos_token_id = None
+ReformerConfig.feed_forward_size = 32
+ReformerConfig.hidden_size = 32
+ReformerConfig.max_position_embeddings = 30000  # Must match prod(axial_pos_shape) = 30,000 (actual sequence length after filtering)
+ReformerConfig.num_attention_heads = 4
+ReformerConfig.use_cache = False
+ReformerConfig.vocab_size = 2
+ReformerConfig.pad_token_id = None
+ReformerConfig.return_dict = False
+
+ReformerConfig.local_chunk_length = 10000
+ReformerConfig.local_num_chunks_before = 1
+ReformerConfig.local_num_chunks_after = 1
+
+ReformerConfig.num_hashes = 2
+ReformerConfig.lsh_attn_chunk_length = 80
+ReformerConfig.lsh_num_chunks_before = 1
+ReformerConfig.lsh_num_chunks_after = 1
+
+ReformerLabeler.predictor = @Predictor()
+Predictor.d_model = 64  # Должно соответствовать реальному выходу Reformer
+Predictor.dropout = 0.1
+Predictor.n_class = %n_class
+
+

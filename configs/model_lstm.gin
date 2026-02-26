@@ -1,0 +1,38 @@
+import deepgene.models
+
+model_name = "%model_name"
+
+##########################
+#  Model
+##########################
+
+LstmLabeler.embedding = @ConvEmbedding()
+#LstmLabeler.embedding = @Embedding()
+#LstmLabeler.embedding = @NoEmbedding()
+
+Embedding.num_embeddings = 2
+Embedding.embedding_dim = %n_class
+
+ConvEmbedding.n_layers = 4
+ConvEmbedding.in_channels = 1
+ConvEmbedding.out_channels = 1  # LSTM имеет input_size = 1 (hardcoded в коде)
+ConvEmbedding.kernel_size = 21
+ConvEmbedding.stride = 1
+
+LstmLabeler.n_class = %n_class
+LstmLabeler.loss = %loss_function
+#LstmLabeler.lstm = @LSTM()
+
+#LSTM.input_size = 1
+#LSTM.hidden_size = %n_class
+#LSTM.num_layers = 4
+#LSTM.batch_first = True
+#LSTM.dropout = 0.1
+#LSTM.bidirectional = True
+
+LstmLabeler.predictor = @Predictor()
+Predictor.d_model = 64
+Predictor.dropout = 0.1
+Predictor.n_class = %n_class
+
+

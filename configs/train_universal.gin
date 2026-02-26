@@ -1,0 +1,94 @@
+# Универсальная конфигурация обучения
+# Параметры будут переопределяться через gin_param
+
+import deepgene.utils
+import deepgene.models
+
+
+##########################
+#  Training
+##########################
+# fit_model.model = @%model_class()
+fit_model.trainer = @Trainer()
+fit_model.data_module = @DatasetXY()
+fit_model.output = %output
+fit_model.model_name = %model_name
+
+Trainer.accelerator = 'gpu'
+Trainer.devices = 1
+# Trainer.strategy = 'ddp'  # Use auto for local testing, DDP for cluster
+
+Trainer.max_epochs = 100
+Trainer.enable_checkpointing = True
+# Trainer.auto_lr_find = True  # Removed in newer PyTorch Lightning versions
+Trainer.logger = @CometLogger()
+Trainer.default_root_dir = %output
+Trainer.log_every_n_steps = 1
+Trainer.val_check_interval = 50
+Trainer.limit_val_batches = 5
+Trainer.callbacks = [@ModelCheckpoint(), @EarlyStopping()]
+
+# Trainer.auto_scale_batch_size = True  # Removed in newer PyTorch Lightning versions
+# Trainer.fast_dev_run = True
+
+
+# Профилирование производительности
+# Trainer.profiler = @PyTorchProfiler()
+# PyTorchProfiler.dirpath = %output
+# PyTorchProfiler.filename = "profiler_results"
+# PyTorchProfiler.export_to_chrome = True
+# PyTorchProfiler.row_limit = 20
+# PyTorchProfiler.sort_by_key = "cuda_time_total"
+
+# Подробное логирование
+Trainer.enable_progress_bar = True
+Trainer.enable_model_summary = True
+
+# configs/train_tesla_v100.gin
+Trainer.precision = 32  # Mixed precision for memory efficiency
+# Trainer.sync_batchnorm = True  # Sync batch norm for DDP
+# Trainer.gradient_clip_val = 0.5  # More aggressive clipping for stability
+Trainer.accumulate_grad_batches = 4  # Accumulate gradients for larger effective batch size
+
+ModelCheckpoint.monitor = "val_loss"
+ModelCheckpoint.dirpath = %output
+ModelCheckpoint.filename = "%model_name"
+# Было 3 и не было save_last
+ModelCheckpoint.save_top_k = 1
+ModelCheckpoint.save_last = False
+ModelCheckpoint.mode = "min"
+
+EarlyStopping.monitor = "val_loss"
+EarlyStopping.patience = 10
+EarlyStopping.mode = "min"
+EarlyStopping.min_delta = 0.0
+EarlyStopping.verbose = True
+
+##########################
+#  Optimizer (общие параметры для всех моделей)
+##########################
+learning_rate = 1e-4
+weight_decay = 1e-5
+
+GruLabeler.learning_rate = %learning_rate
+GruLabeler.weight_decay = %weight_decay
+
+LstmLabeler.learning_rate = %learning_rate
+LstmLabeler.weight_decay = %weight_decay
+
+ReformerLabeler.learning_rate = %learning_rate
+ReformerLabeler.weight_decay = %weight_decay
+
+CometLogger.workspace = "HSE_KHOMUTOV"
+CometLogger.project_name = "deepgene-12-v8"
+CometLogger.save_dir = %output
+
+##########################
+#  Testing
+##########################
+test_model.trainer = @Trainer()
+test_model.datamodule = @DatasetXY()
+test_model.test_output = %output
+test_model.model_name = %model_name
+
+

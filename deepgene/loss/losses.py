@@ -4,9 +4,69 @@ import torch.nn.functional as F
 from torch.autograd import Variable
 from torchtyping import TensorType, patch_typeguard
 from typeguard import typechecked
+import numpy as np
 
 patch_typeguard()
 
+
+limits = [
+0.0,
+2900,
+6000,
+9500,
+15000,
+18000,
+30000,
+42000
+]
+
+
+def from_probability_to_N(priors, limits=limits):
+    l = 1
+    tau = torch.tensor(np.array(limits[1:]) - np.array(limits[:-1]))
+    N = []
+    for j in range(len(tau)):
+        N.append(
+            torch.round(tau[j]/(-2*torch.log(1 - (priors[j]/l))))
+        )
+        l *= torch.exp(-tau[j]/(2*N[j]))
+    return N
+
+def NeLoss(n_class: int,
+           y_pred, # : TensorType["batch", "genome_length", "hidden_size"],
+           y_true #: TensorType["batch", "genome_length"],
+           ):
+    y_pred = F.log_softmax(y_pred, dim=-1)
+    y_true = y_true.long()
+    y_true = F.one_hot(y_true, n_class).float()
+
+    # Превратить их в распределение
+    d_pred = y_pred.sum(axis=0)/len(y_true)
+    d_true = y_true.sum(axis=0)/len(y_true)
+    # Распределение в Ne
+    N_pred = from_probability_to_N(d_pred)
+    N_true = from_probability_to_N(d_true)
+    # Считаем абсолюты отклонений Ne в каждом интервале
+
+    
+    loss = [abs(n - m) for (n,m) in zip(N_pred, N_true)]
+    
+    return loss
+
+
+@typechecked
+def L1Loss(n_class: int,
+           y_pred: TensorType["batch", "genome_length", "hidden_size"],
+           y_true: TensorType["batch", "genome_length"],
+           ):
+    y_pred = F.log_softmax(y_pred, dim=-1)
+    y_true = y_true.long()
+    y_true = F.one_hot(y_true, n_class).float()
+    loss = F.l1_loss(
+        y_pred, y_true
+        , reduction='mean'
+    )
+    return loss
 
 @typechecked
 def KLDivLoss(n_class: int,
@@ -21,11 +81,41 @@ def KLDivLoss(n_class: int,
 
 
 @typechecked
+def NllLoss(
+             y_pred: TensorType["batch", "genome_length", "hidden_size"],
+             y_true: TensorType["batch", "genome_length"]
+            ):
+    # nll_loss
+    y_pred = F.log_softmax(y_pred, dim=-1)
+    y_pred = y_pred.permute(0, 2, 1)
+    y_true = y_true.long()
+    loss = F.nll_loss(y_pred, y_true)
+    return loss 
+
+
+@typechecked
+def HuberLoss(n_class: int,
+           y_pred: TensorType["batch", "genome_length", "hidden_size"],
+           y_true: TensorType["batch", "genome_length"],
+           ):
+    y_pred = F.log_softmax(y_pred, dim=-1)
+    y_true = y_true.long()
+    y_true = F.one_hot(y_true, n_class).float()
+    loss = F.huber_loss(
+        y_pred, y_true
+        , reduction='mean'
+        , delta=1.0
+    )
+    return loss
+
+
+@typechecked
 def CrossEntropyLoss(y_pred: TensorType["batch", "genome_length", "hidden_size"],
                      y_true: TensorType["batch", "genome_length"],
                      weight=None):
+    # y_pred = F.log_softmax(y_pred, dim=-1)
     y_pred = y_pred.permute(0, 2, 1)
-    output = F.cross_entropy(y_pred, y_true, weight=weight)
+    output = F.cross_entropy(y_pred, y_true.long(), weight=weight)
     return output
 
 
@@ -34,7 +124,7 @@ def EMD_squared_loss(n_class: int,
                      y_pred: TensorType["batch", "genome_length", "hidden_size"],
                      y_true: TensorType["batch", "genome_length"]):
     y_pred = F.softmax(y_pred, dim=-1)
-    y_true = F.one_hot(y_true, n_class).float()
+    y_true = F.one_hot(y_true.long(), n_class).float()
     output = torch.mean(
         torch.sum(
             torch.square(
@@ -43,17 +133,27 @@ def EMD_squared_loss(n_class: int,
     )
     return output
 
+@typechecked
+def BCEWithLogitsLoss(n_class: int,
+             y_pred: TensorType["batch", "genome_length", "hidden_size"],
+             y_true: TensorType["batch", "genome_length"]):
+    y_pred_ce = y_pred.permute(0, 2, 1)
+    loss_ce = F.cross_entropy(y_pred_ce, y_true.long())
+    y_pred = F.softmax(y_pred, dim=-1)
+    y_true = F.one_hot(y_true.long(), n_class).float()
+    loss_emd = torch.mean(torch.square(torch.cumsum(y_pred, dim=-1) - torch.cumsum(y_true, dim=-1)))
+    return loss_ce + 2*loss_emd
 
 @typechecked
 def CEandEMD(n_class: int,
              y_pred: TensorType["batch", "genome_length", "hidden_size"],
              y_true: TensorType["batch", "genome_length"]):
     y_pred_ce = y_pred.permute(0, 2, 1)
-    loss_ce = F.cross_entropy(y_pred_ce, y_true)
+    loss_ce = F.cross_entropy(y_pred_ce, y_true.long())
     y_pred = F.softmax(y_pred, dim=-1)
-    y_true = F.one_hot(y_true, n_class).float()
+    y_true = F.one_hot(y_true.long(), n_class).float()
     loss_emd = torch.mean(torch.square(torch.cumsum(y_pred, dim=-1) - torch.cumsum(y_true, dim=-1)))
-    return loss_ce + loss_emd
+    return loss_ce + 2*loss_emd
 
 
 @typechecked
@@ -108,7 +208,6 @@ class FocalLoss(torch.nn.Module):
             return loss.mean()
         else:
             return loss.sum()
-
 
 def MYLOSS(n_class, device):
     D = torch.full(size=(n_class, n_class), fill_value=0, device=device).float()

@@ -1,0 +1,14 @@
+{
+  "sample": null,
+  "chrom": null,
+  "psmcfa": "1000 геномов/NA20512.psmcfa",
+  "record_index": 0,
+  "header": "chr1",
+  "bin_size": 100,
+  "n_bins": 2489465,
+  "window_len": 30000,
+  "step": 30000,
+  "pad": false,
+  "n_windows": 82,
+  "combined": false
+}

@@ -1,0 +1,2 @@
+psmc_path,psmcfa_path,png_path,checkpoint,true_demography,bin_size,mu,generation_time,N0,n_records,window_len,psmc_n_points,psmc_FMSE,psmc_RMSE,psmc_FMAE,nn_n_points,nn_FMSE,nn_RMSE,nn_FMAE
+new_res_30/psmc_synthetic/hl/exp1_hl.psmc,new_res_30/psmc_synthetic/hl/exp1_hl.psmcfa,new_res_30/psmc_synthetic/hl/exp1_hl.png,/Users/evgen/Desktop/newnewnew/deepgene_new_10_v11/test_all_v1/model/gru_set3_ce.ckpt,get_humanlike,100,1.25e-07,25.0,4845.77532,100,30000,64,0.04249080585428566,0.20613298099597177,0.17475536513667728,30,0.08199299083333335,0.2863441824681154,0.20863666666666664

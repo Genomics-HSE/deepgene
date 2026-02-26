@@ -5,6 +5,10 @@ import gin
 from deepgene.utils import fit_model, test_model
 import argparse
 
+import torch
+torch.cuda.empty_cache()
+
+
 
 def handler(signum, frame):
     print('Received signal to end running', signum)
@@ -33,6 +37,7 @@ if __name__ == '__main__':
     #print(gin.config._CONFIG)
 
     if args.action == "fit":
+        print(f"data=={args.data}")
         fit_model(configs=gin.config._CONFIG,
                   config_files=(args.model, args.data, args.train))
     elif args.action == "test":

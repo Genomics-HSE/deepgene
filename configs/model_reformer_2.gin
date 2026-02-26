@@ -1,0 +1,49 @@
+import deepgene.models
+import deepgene.models.base_models
+
+model_name = "%model_name"
+
+##########################
+#  Model
+##########################
+
+ReformerLabeler.embedding = @ConvEmbedding()
+ReformerPreTrainerLM.embedding = @ConvEmbedding()
+
+ConvEmbedding.n_layers = 4
+ConvEmbedding.in_channels = 1
+ConvEmbedding.out_channels = 32  # Должно совпадать с hidden_size для совместимости с Reformer
+ConvEmbedding.kernel_size = 21
+ConvEmbedding.stride = 1
+
+ReformerLabeler.config = @ReformerConfig()
+ReformerLabeler.loss = %loss_function
+
+ReformerConfig.attention_head_size = 8
+ReformerConfig.attn_layers = ["local", "lsh", "local", "lsh", "local", "lsh"]
+ReformerConfig.axial_pos_embds_dim = [16, 16]  # sum is equal to hidden_size (32), optimized for better distribution
+ReformerConfig.axial_pos_shape = [1500, 2000]  # product = 3,000,000, optimized for sequences up to 3M
+ReformerConfig.chunk_size_lm_head = 0
+ReformerConfig.eos_token_id = None
+ReformerConfig.feed_forward_size = 16
+ReformerConfig.hidden_size = 32  # Из network_structure.txt: encoder.layer_norm = 32 (вход в encoder после embeddings)
+ReformerConfig.max_position_embeddings = 3000000  # Optimized for sequences up to 3M
+ReformerConfig.num_attention_heads = 4
+ReformerConfig.use_cache = False
+ReformerConfig.vocab_size = 2
+ReformerConfig.pad_token_id = 0
+ReformerConfig.return_dict = False
+
+ReformerConfig.local_chunk_length = 1000
+ReformerConfig.local_num_chunks_before = 1
+ReformerConfig.local_num_chunks_after = 1
+
+ReformerConfig.num_hashes = 2
+ReformerConfig.lsh_attn_chunk_length = 1000
+ReformerConfig.lsh_num_chunks_before = 1
+ReformerConfig.lsh_num_chunks_after = 1
+
+ReformerLabeler.predictor = @Predictor()
+Predictor.d_model = 64  # Должно соответствовать реальному выходу Reformer
+Predictor.dropout = 0.1
+Predictor.n_class = %n_class

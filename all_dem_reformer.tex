@@ -1,0 +1,61 @@
+\footnotesize
+\begin{longtable}{|p{1.3cm}|p{1.3cm}|p{1.3cm}|p{1.3cm}|p{1.3cm}|p{1.3cm}|p{1.3cm}|p{1.3cm}|p{1.3cm}|p{1.3cm}|p{1.3cm}|}
+\hline
+\textbf{model-dems} & \textbf{dems} & \rotatebox{90}{\textbf{accuracy}} & \rotatebox{90}{\textbf{precision}} & \rotatebox{90}{\textbf{precision@3}} & \rotatebox{90}{\textbf{precision@5}} & \rotatebox{90}{\textbf{recall}} & \rotatebox{90}{\textbf{f1-score}} & \rotatebox{90}{\textbf{FMSE}} & \rotatebox{90}{\textbf{FMAE}} & \rotatebox{90}{\textbf{time}} \\
+\hline
+\endfirsthead
+
+\hline
+\textbf{model-dems} & \textbf{dems} & \rotatebox{90}{\textbf{accuracy}} & \rotatebox{90}{\textbf{precision}} & \rotatebox{90}{\textbf{precision@3}} & \rotatebox{90}{\textbf{precision@5}} & \rotatebox{90}{\textbf{recall}} & \rotatebox{90}{\textbf{f1-score}} & \rotatebox{90}{\textbf{FMSE}} & \rotatebox{90}{\textbf{FMAE}} & \rotatebox{90}{\textbf{time}} \\
+\hline
+\endhead
+reformer_const_ce - const & const & 0.20 & 0.12 & 0.50 & 0.65 & 0.20 & 0.14 & 0.19 & 0.17 & 0.30 \\
+reformer_const_ce - hl & hl & 0.33 & 0.23 & 0.73 & 0.82 & 0.33 & 0.22 & 0.17 & 0.36 & 0.25 \\
+reformer_const_ce - zigzag & zigzag & 0.20 & 0.11 & 0.49 & 0.66 & 0.20 & 0.13 & 26690.58 & 39.69 & 0.28 \\
+reformer_const_ce - avg & avg & 0.24 & 0.15 & 0.57 & 0.71 & 0.24 & 0.16 & 8896.98 & 13.41 & 0.28 \\
+reformer_const_kl - const & const & 0.20 & 0.15 & 0.50 & 0.65 & 0.20 & 0.13 & 1496.82 & 9.46 & 0.30 \\
+reformer_const_kl - hl & hl & 0.33 & 0.29 & 0.73 & 0.83 & 0.33 & 0.23 & 476.42 & 5.52 & 0.25 \\
+reformer_const_kl - zigzag & zigzag & 0.20 & 0.13 & 0.49 & 0.67 & 0.20 & 0.14 & 19908.62 & 35.71 & 0.29 \\
+reformer_const_kl - avg & avg & 0.24 & 0.19 & 0.57 & 0.71 & 0.24 & 0.17 & 7293.95 & 16.90 & 0.28 \\
+reformer_hl_ce - const & const & 0.17 & 0.11 & 0.42 & 0.58 & 0.17 & 0.11 & 1.81 & 0.86 & 0.30 \\
+reformer_hl_ce - hl & hl & 0.44 & 0.38 & 0.75 & 0.83 & 0.44 & 0.40 & 1480.63 & 9.77 & 0.25 \\
+reformer_hl_ce - zigzag & zigzag & 0.17 & 0.11 & 0.43 & 0.62 & 0.17 & 0.11 & 73601.02 & 68.95 & 0.28 \\
+reformer_hl_ce - avg & avg & 0.26 & 0.20 & 0.54 & 0.67 & 0.26 & 0.21 & 25027.82 & 26.53 & 0.28 \\
+reformer_hl_kl - const & const & 0.15 & 0.07 & 0.35 & 0.48 & 0.15 & 0.08 & 6447.42 & 17.66 & 0.29 \\
+reformer_hl_kl - hl & hl & 0.42 & 0.35 & 0.75 & 0.82 & 0.42 & 0.38 & 3269.84 & 14.48 & 0.25 \\
+reformer_hl_kl - zigzag & zigzag & 0.15 & 0.08 & 0.37 & 0.55 & 0.15 & 0.08 & 35863.33 & 48.37 & 0.28 \\
+reformer_hl_kl - avg & avg & 0.24 & 0.17 & 0.49 & 0.62 & 0.24 & 0.18 & 15193.53 & 26.84 & 0.27 \\
+reformer_set1_ce - const & const & 0.22 & 0.14 & 0.49 & 0.64 & 0.22 & 0.16 & 16912.50 & 32.63 & 0.29 \\
+reformer_set1_ce - hl & hl & 0.43 & 0.39 & 0.75 & 0.83 & 0.43 & 0.41 & 0.33 & 0.31 & 0.27 \\
+reformer_set1_ce - zigzag & zigzag & 0.24 & 0.16 & 0.51 & 0.66 & 0.24 & 0.18 & 14719.30 & 25.19 & 0.29 \\
+reformer_set1_ce - avg & avg & 0.29 & 0.23 & 0.58 & 0.71 & 0.29 & 0.25 & 10544.04 & 19.38 & 0.28 \\
+reformer_set1_kl - const & const & 0.21 & 0.14 & 0.49 & 0.64 & 0.21 & 0.15 & 0.63 & 0.28 & 0.29 \\
+reformer_set1_kl - hl & hl & 0.41 & 0.36 & 0.75 & 0.83 & 0.41 & 0.38 & 4319.43 & 15.14 & 0.25 \\
+reformer_set1_kl - zigzag & zigzag & 0.23 & 0.15 & 0.52 & 0.67 & 0.23 & 0.16 & 97080.02 & 78.40 & 0.28 \\
+reformer_set1_kl - avg & avg & 0.28 & 0.22 & 0.59 & 0.71 & 0.28 & 0.23 & 33800.02 & 31.27 & 0.28 \\
+reformer_set2_ce - const & const & 0.10 & 0.07 & 0.27 & 0.39 & 0.10 & 0.06 & 893.68 & 8.42 & 0.29 \\
+reformer_set2_ce - hl & hl & 0.30 & 0.21 & 0.69 & 0.78 & 0.30 & 0.19 & 1.92 & 0.86 & 0.25 \\
+reformer_set2_ce - zigzag & zigzag & 0.09 & 0.06 & 0.25 & 0.36 & 0.09 & 0.05 & 21.23 & 2.09 & 0.28 \\
+reformer_set2_ce - avg & avg & 0.17 & 0.11 & 0.40 & 0.51 & 0.17 & 0.10 & 305.61 & 3.79 & 0.28 \\
+reformer_set2_kl - const & const & 0.10 & 0.05 & 0.28 & 0.40 & 0.10 & 0.05 & 589.40 & 6.63 & 0.31 \\
+reformer_set2_kl - hl & hl & 0.31 & 0.17 & 0.70 & 0.79 & 0.31 & 0.19 & 1.82 & 0.90 & 0.25 \\
+reformer_set2_kl - zigzag & zigzag & 0.09 & 0.03 & 0.25 & 0.37 & 0.09 & 0.04 & 8084.08 & 24.17 & 0.28 \\
+reformer_set2_kl - avg & avg & 0.17 & 0.08 & 0.41 & 0.52 & 0.17 & 0.09 & 2891.77 & 10.57 & 0.28 \\
+reformer_set2_plus_ce - const & const & 0.12 & 0.06 & 0.33 & 0.46 & 0.12 & 0.07 & 8.18 & 1.00 & 0.30 \\
+reformer_set2_plus_ce - hl & hl & 0.32 & 0.15 & 0.70 & 0.80 & 0.32 & 0.20 & 0.82 & 0.62 & 0.25 \\
+reformer_set2_plus_ce - zigzag & zigzag & 0.11 & 0.07 & 0.30 & 0.44 & 0.11 & 0.06 & 25464.08 & 42.37 & 0.28 \\
+reformer_set2_plus_ce - avg & avg & 0.18 & 0.09 & 0.44 & 0.56 & 0.18 & 0.11 & 8491.03 & 14.66 & 0.28 \\
+reformer_set2_plus_kl - const & const & 0.11 & 0.09 & 0.29 & 0.41 & 0.11 & 0.07 & 4.13 & 0.85 & 0.30 \\
+reformer_set2_plus_kl - hl & hl & 0.33 & 0.28 & 0.70 & 0.79 & 0.33 & 0.22 & 590.02 & 6.85 & 0.25 \\
+reformer_set2_plus_kl - zigzag & zigzag & 0.10 & 0.10 & 0.27 & 0.39 & 0.10 & 0.06 & 12.70 & 1.65 & 0.28 \\
+reformer_set2_plus_kl - avg & avg & 0.18 & 0.16 & 0.42 & 0.53 & 0.18 & 0.11 & 202.28 & 3.12 & 0.28 \\
+reformer_set3_ce - const & const & 0.12 & 0.06 & 0.31 & 0.45 & 0.12 & 0.06 & 5.64 & 0.85 & 0.30 \\
+reformer_set3_ce - hl & hl & 0.32 & 0.16 & 0.70 & 0.80 & 0.32 & 0.19 & 736.30 & 7.52 & 0.25 \\
+reformer_set3_ce - zigzag & zigzag & 0.11 & 0.07 & 0.31 & 0.45 & 0.11 & 0.06 & 4940.89 & 18.67 & 0.29 \\
+reformer_set3_ce - avg & avg & 0.18 & 0.10 & 0.44 & 0.57 & 0.18 & 0.10 & 1894.28 & 9.01 & 0.28 \\
+reformer_set3_kl - const & const & 0.13 & 0.06 & 0.33 & 0.46 & 0.13 & 0.06 & 1070.41 & 8.80 & 0.31 \\
+reformer_set3_kl - hl & hl & 0.31 & 0.20 & 0.69 & 0.78 & 0.31 & 0.19 & 978.41 & 8.30 & 0.26 \\
+reformer_set3_kl - zigzag & zigzag & 0.14 & 0.07 & 0.36 & 0.49 & 0.14 & 0.07 & 9029.37 & 24.76 & 0.29 \\
+reformer_set3_kl - avg & avg & 0.19 & 0.11 & 0.46 & 0.58 & 0.19 & 0.11 & 3692.73 & 13.95 & 0.29 \\
+\hline
+\end{longtable}

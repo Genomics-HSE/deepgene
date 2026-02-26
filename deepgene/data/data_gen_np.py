@@ -14,7 +14,7 @@ from math import log, exp
 
 N = 32  # int(sys.argv[4])
 
-T_max = 20  # 400_000
+T_max =  20 # 20 # 2500 # 20  # 400_000
 coeff = np.log(T_max) / (N - 1)
 MAGIC_COEFF = 550 # 2_000 ## 1_000 for 169302 as T_max, 2_000 for 338605
 cut_coeff = 400.0
@@ -22,12 +22,62 @@ cut_coeff = 400.0
 limits = [np.exp(coeff * i) for i in range(N)]
 limits = [MAGIC_COEFF * (np.exp(i * np.log(1 + 10 * T_max) / N) - 1)
           for i in range(N)]
-limits = [cut_coeff] + [l for l in limits if l > cut_coeff]
+
+# limits = [cut_coeff] + [l for l in limits if l > cut_coeff]
+limits = [
+0.0,
+2900,
+6000,
+9500,
+15000,
+18000,
+30000,
+42000
+]
+
+limits = [
+    0,
+    700,
+    1500,
+    2200,
+    3000,
+    3400,
+    3800,
+    4200,   
+    4700,
+    5200,
+    5700,
+    6200,
+    7200,
+    8500,
+    9800,
+    11000,
+    12500,
+    14000,  
+    15500,
+    16500,
+    17500,
+    18500,
+    21000,
+    24000,
+    27000,
+    31000,
+    40000,
+    55000,
+    75000,
+    95000,
+    120000,
+    10000000,
+    20000000
+]
 
 RANDOM_SEED = 42
 np.random.seed(RANDOM_SEED)
 
 L_HUMAN = 30_000_000  # int(float(sys.argv[3])) #30_000_000
+# RHO_HUMAN = 1.38 * 1e-8 #-9
+# MU_HUMAN = 1.28 * 1e-8 #-8
+
 RHO_HUMAN = 1.6 * 10e-9
 MU_HUMAN = 1.25 * 10e-8
 
@@ -129,20 +179,30 @@ def generate_demographic_events(population: int = None, random_seed: int = 42) -
 
 def get_const_demographcs(population: int = 10_000, random_seed: int = 42) -> 'msprime.Demography':
     demography = msprime.Demography()
-    demography.add_population(name="A", initial_size=initial_size)
+    demography.add_population(name="A", initial_size=population)
 
     return demography
+def get_test_demographcs_mew(population: int = 10_000, random_seed: int = 42) -> 'msprime.Demography':
+    demography = msprime.Demography()
 
+    demography.add_population(name="A", initial_size=population)
+    demography.add_population_parameters_change(40_000, initial_size=0.1 * population)
+    demography.add_population_parameters_change(240_000, initial_size=1. * population)
+    demography.add_population_parameters_change(800_000, initial_size=.5 * population)
+    demography.add_population_parameters_change(4_000_000, initial_size=1. * population)
+    demography.add_population_parameters_change(80_000_000, initial_size=2. * population)
+
+    return demography
 
 def get_test_demographcs(population: int = 10_000, random_seed: int = 42) -> 'msprime.Demography':
     demography = msprime.Demography()
 
-    demography.add_population(name="A", initial_size=initial_size)
-    demography.add_population_parameters_change(400, initial_size=0.1 * initial_size)
-    demography.add_population_parameters_change(2400, initial_size=1. * initial_size)
-    demography.add_population_parameters_change(8000, initial_size=.5 * initial_size)
-    demography.add_population_parameters_change(40_000, initial_size=1. * initial_size)
-    demography.add_population_parameters_change(80_000, initial_size=2. * initial_size)
+    demography.add_population(name="A", initial_size=population)
+    demography.add_population_parameters_change(400, initial_size=0.1 * population)
+    demography.add_population_parameters_change(2400, initial_size=1. * population)
+    demography.add_population_parameters_change(8000, initial_size=.5 * population)
+    demography.add_population_parameters_change(40_000, initial_size=1. * population)
+    demography.add_population_parameters_change(80_000, initial_size=2. * population)
 
     return demography
 
@@ -150,14 +210,466 @@ def get_test_demographcs(population: int = 10_000, random_seed: int = 42) -> 'ms
 def get_test_demographcs_2(population: int = 10_000, random_seed: int = 42) -> 'msprime.Demography':
     demography = msprime.Demography()
 
-    demography.add_population(name="A", initial_size=initial_size)
+    demography.add_population(name="A", initial_size=population)
     for i in range(32):
-        demography.add_population_parameters_change(i*1_000, initial_size=((.5 + 0.5*i%2)* initial_size))
+        demography.add_population_parameters_change(i*1_000, initial_size=((.5 + 0.5*i%2)* population))
 
-    demography.add_population_parameters_change(40_000, initial_size=1. * initial_size)
-    demography.add_population_parameters_change(80_000, initial_size=2. * initial_size)
+    demography.add_population_parameters_change(40_000, initial_size=1. * population)
+    demography.add_population_parameters_change(80_000, initial_size=2. * population)
 
     return demography
+
+def get_humanlike(initial_size: int = 10_000, random_seed: int = 42) -> 'msprime.Demography':
+    
+    # ms = "-eN 0.1 0.1 -eN 0.6 1 -eN  2 0.5 -eN 10 1 -eN 20 2"
+    # graph = demes.from_ms(ms, N0=population, deme_names=["A"])
+    # emography = msprime.Demography.from_demes(graph)
+
+    demography = msprime.Demography()
+
+    coeff = 25 
+
+    demography.add_population(name="A", initial_size=initial_size)
+    demography.add_population_parameters_change(4000/25, initial_size=0.1 * initial_size)
+    demography.add_population_parameters_change(24000/25, initial_size=1. * initial_size)
+    demography.add_population_parameters_change(80000/25, initial_size=.5 * initial_size)
+    demography.add_population_parameters_change(400000/25, initial_size=1. * initial_size)
+    demography.add_population_parameters_change(800000/25, initial_size=2. * initial_size)
+    return demography
+
+def get_humanlike(initial_size: int = 10_000, random_seed: int = 42) -> 'msprime.Demography':
+    demography = msprime.Demography()
+
+    demography.add_population(name="A", initial_size=initial_size)
+    demography.add_population_parameters_change(2900, initial_size=0.5 * initial_size)
+    demography.add_population_parameters_change(6000, initial_size=1. * initial_size)
+    demography.add_population_parameters_change(15000, initial_size=.5 * initial_size)
+    demography.add_population_parameters_change(18000, initial_size=1. * initial_size)
+    demography.add_population_parameters_change(30000, initial_size=2. * initial_size)
+
+    return demography
+
+
+def get_humanlike_2(initial_size: int = 10_000, random_seed: int = 42) -> msprime.Demography:
+    demography = msprime.Demography()
+    demography.add_population(name="A", initial_size=initial_size)
+
+    N0 = 10_000  # фиксируем N0
+    demography.add_population_parameters_change(time=1000,  population="A", initial_size=0.2 * N0)
+    demography.add_population_parameters_change(time=3500,  population="A", initial_size=3.0 * N0)
+    demography.add_population_parameters_change(time=10000, population="A", initial_size=1.5 * N0)
+
+    return demography
+
+def get_humanlike_2_1(initial_size: int = 10_000, random_seed: int = 42) -> msprime.Demography:
+    demography = msprime.Demography()
+    demography.add_population(name="A", initial_size=initial_size)
+
+    N0 = 10_000  # фиксируем N0
+    demography.add_population_parameters_change(time=1800,  population="A", initial_size=0.2 * N0)
+    demography.add_population_parameters_change(time=3500,  population="A", initial_size=3.0 * N0)
+    demography.add_population_parameters_change(time=10000, population="A", initial_size=1.5 * N0)
+
+    return demography
+
+
+def get_random_events_by_points(population: int = 10_000, random_seed: int = 42, points = limits ) -> 'msprime.Demography':
+    # пределы для Ne
+    a, b = 0.1, 2.0
+    
+    demography = msprime.Demography()
+    for (i, point) in enumerate(points):
+        coeff = np.random.uniform(a, b)
+        if i == 0: 
+            demography.add_population(name="A", initial_size = coeff * population)
+        else:
+            demography.add_population_parameters_change(point, initial_size=coeff * population)
+    return demography
+
+
+
+def get_exp_growth(population: int = 10_000, grow_rate = 1.0 , random_seed: int = 42, points = limits) -> 'msprime.Demography':
+    # пределы для Ne
+    a, b = 0.1, 2.0
+    
+    cur_population = population
+    demography = msprime.Demography()
+    for (i, point) in enumerate(points):
+        coeff = np.random.uniform(a, b)
+        if i == 0: 
+            demography.add_population(name="A", initial_size = cur_population)
+        else:
+            cur_population = cur_population * grow_rate
+            demography.add_population_parameters_change(point, initial_size=cur_population)
+    return demography
+
+
+def get_dem_ZZZ(initial_size: int = 10_000, random_seed: int = 42) -> 'msprime.Demography':
+    
+    demography = msprime.Demography()
+
+    coeff = 2.0
+    
+    demography.add_population(name="A", initial_size=initial_size)
+    for l in limits:
+        demography.add_population_parameters_change(l, initial_size=initial_size*coeff)
+        if coeff == 2.0: 
+            coeff = 1.0
+        else:
+            coeff = 2.0
+
+    return demography
+
+
+def get_zigzag(initial_size: int = 10_000, random_seed: int = 42) -> 'msprime.Demography':
+    
+    demography = msprime.Demography()
+    
+    demography.add_population(name="A", initial_size=initial_size)
+    
+    demography.add_population_parameters_change(1500, initial_size=initial_size*0.8)
+    demography.add_population_parameters_change(2200, initial_size=initial_size*0.6)
+    demography.add_population_parameters_change(3000, initial_size=initial_size*0.4)
+
+    demography.add_population_parameters_change(3400, initial_size=initial_size*0.6)
+    demography.add_population_parameters_change(3800, initial_size=initial_size*0.8)
+    demography.add_population_parameters_change(4200, initial_size=initial_size*1.0)
+
+
+    demography.add_population_parameters_change(9800, initial_size=initial_size*1.25)
+    demography.add_population_parameters_change(11000, initial_size=initial_size*1.5)
+    demography.add_population_parameters_change(12500, initial_size=initial_size*2.0)
+
+    demography.add_population_parameters_change(14000, initial_size=initial_size*1.5)
+    demography.add_population_parameters_change(15500, initial_size=initial_size*1.25)
+    demography.add_population_parameters_change(16500, initial_size=initial_size*1.0)    
+
+    demography.add_population_parameters_change(21000, initial_size=initial_size*0.8)
+    demography.add_population_parameters_change(24000, initial_size=initial_size*0.6)
+    demography.add_population_parameters_change(27000, initial_size=initial_size*0.4)
+    
+    return demography
+
+
+current_K = 0
+current_K_plus = 0
+
+def get_one_of_two(initial_size: int = 10_000, random_seed: int = 42) -> 'msprime.Demography':
+  
+    demography = msprime.Demography()
+    demography.add_population(name="A", initial_size=initial_size)
+
+    global current_K
+    if current_K%2==0:
+        demography.add_population_parameters_change(2900, initial_size=0.5 * initial_size)
+        demography.add_population_parameters_change(6000, initial_size=1. * initial_size)
+        demography.add_population_parameters_change(15000, initial_size=.5 * initial_size)
+        demography.add_population_parameters_change(18000, initial_size=1. * initial_size)
+        demography.add_population_parameters_change(30000, initial_size=2. * initial_size)
+    
+
+    current_K += 1
+    return demography
+
+
+def get_one_of_many(initial_size: int = 10_000, random_seed: int = 42) -> 'msprime.Demography':
+
+    global current_K
+    points = limits
+    population = 10_000
+    demography = msprime.Demography()
+    demography.add_population(name="A", initial_size=initial_size)   
+
+    #current_K = np.random.choice([0,1,2,3,4])
+
+    if current_K == 0:
+        current_K = 1
+    elif current_K == 1:
+        demography.add_population_parameters_change(2900, initial_size=0.5 * initial_size)
+        demography.add_population_parameters_change(6000, initial_size=1. * initial_size)
+        demography.add_population_parameters_change(15000, initial_size=.5 * initial_size)
+        demography.add_population_parameters_change(18000, initial_size=1. * initial_size)
+        demography.add_population_parameters_change(30000, initial_size=2. * initial_size)
+
+        current_K = 2
+    elif current_K == 2:
+        a, b = 0.1, 2.0    
+        for (i, point) in enumerate(points):
+            coeff = np.random.uniform(a, b)
+            if i != 0: 
+                demography.add_population_parameters_change(point, initial_size=coeff * population)
+        current_K = 3
+    elif current_K == 3:
+        grow_rate = 1.1
+        cur_population = population
+        for (i, point) in enumerate(points):
+            if i != 0: 
+                cur_population = cur_population * grow_rate
+                demography.add_population_parameters_change(point, initial_size=cur_population)
+        current_K = 4
+    elif current_K == 4:
+        grow_rate = 0.9
+        cur_population = population
+        for (i, point) in enumerate(points):
+            if i != 0: 
+                cur_population = cur_population * grow_rate
+                demography.add_population_parameters_change(point, initial_size=cur_population)
+        current_K = 5
+        current_K = 0
+    elif current_K == 5:
+        bootleneck_coeff = 0.1
+        start, finish = np.random.randint(0,32)
+        demography.add_population_parameters_change(limits[start], initial_size=bootleneck_coeff * initial_size)
+        demography.add_population_parameters_change(limits[finish], initial_size=1. * initial_size)
+        current_K = 0
+    
+    return demography
+
+
+def get_set1(initial_size: int = 10_000, random_seed: int = 42) -> 'msprime.Demography':
+
+    global current_K
+    points = limits
+    population = 10_000
+    demography = msprime.Demography()
+    demography.add_population(name="A", initial_size=initial_size)   
+
+    #current_K = np.random.choice([0,1,2,3,4])
+
+    if current_K == 0: # const
+        current_K = 1
+    elif current_K == 1: # hl
+        demography.add_population_parameters_change(2900, initial_size=0.5 * initial_size)
+        demography.add_population_parameters_change(6000, initial_size=1. * initial_size)
+        demography.add_population_parameters_change(15000, initial_size=.5 * initial_size)
+        demography.add_population_parameters_change(18000, initial_size=1. * initial_size)
+        demography.add_population_parameters_change(30000, initial_size=2. * initial_size)
+
+        current_K = 2
+    elif current_K == 2: # random
+        a, b = 0.1, 2.0    
+        for (i, point) in enumerate(points):
+            coeff = np.random.uniform(a, b)
+            if i != 0: 
+                demography.add_population_parameters_change(point, initial_size=coeff * population)
+        current_K = 0
+    return demography
+
+def get_set2(initial_size: int = 10_000, random_seed: int = 42) -> 'msprime.Demography':
+
+    global current_K
+    points = limits
+    population = 10_000
+    demography = msprime.Demography()
+    demography.add_population(name="A", initial_size=initial_size)   
+
+    #current_K = np.random.choice([0,1,2,3,4])
+
+    if current_K == 0:
+        current_K = 1
+    elif current_K == 1:
+        demography.add_population_parameters_change(2900, initial_size=0.5 * initial_size)
+        demography.add_population_parameters_change(6000, initial_size=1. * initial_size)
+        demography.add_population_parameters_change(15000, initial_size=.5 * initial_size)
+        demography.add_population_parameters_change(18000, initial_size=1. * initial_size)
+        demography.add_population_parameters_change(30000, initial_size=2. * initial_size)
+
+        current_K = 2
+    elif current_K == 2:
+        a, b = 0.1, 2.0    
+        for (i, point) in enumerate(points):
+            coeff = np.random.uniform(a, b)
+            if i != 0: 
+                demography.add_population_parameters_change(point, initial_size=coeff * population)
+        current_K = 3
+    elif current_K == 3:
+        grow_rate = 1.1
+        cur_population = population
+        for (i, point) in enumerate(points):
+            if i != 0: 
+                cur_population = cur_population * grow_rate
+                demography.add_population_parameters_change(point, initial_size=cur_population)
+        current_K = 4
+    elif current_K == 4:
+        grow_rate = 0.9
+        cur_population = population
+        for (i, point) in enumerate(points):
+            if i != 0: 
+                cur_population = cur_population * grow_rate
+                demography.add_population_parameters_change(point, initial_size=cur_population)
+        current_K = 0
+    
+    return demography
+
+def get_set2_plus(initial_size: int = 10_000, random_seed: int = 42) -> 'msprime.Demography':
+
+    global current_K_plus
+    points = limits
+    population = 10_000
+    demography = msprime.Demography()
+    demography.add_population(name="A", initial_size=initial_size)   
+
+    #current_K_plus = np.random.choice([0,1,2,3,4,5])
+
+    if current_K_plus == 0:
+        current_K_plus = 1
+    elif current_K_plus == 1:
+        demography.add_population_parameters_change(2900, initial_size=0.5 * initial_size)
+        demography.add_population_parameters_change(6000, initial_size=1. * initial_size)
+        demography.add_population_parameters_change(15000, initial_size=.5 * initial_size)
+        demography.add_population_parameters_change(18000, initial_size=1. * initial_size)
+        demography.add_population_parameters_change(30000, initial_size=2. * initial_size)
+
+        current_K_plus = 2
+    elif current_K_plus == 2:
+        a, b = 0.1, 2.0    
+        for (i, point) in enumerate(points):
+            coeff = np.random.uniform(a, b)
+            if i != 0: 
+                demography.add_population_parameters_change(point, initial_size=coeff * population)
+        current_K_plus = 3
+    elif current_K_plus == 3:
+        grow_rate = 1.1
+        cur_population = population
+        for (i, point) in enumerate(points):
+            if i != 0: 
+                cur_population = cur_population * grow_rate
+                demography.add_population_parameters_change(point, initial_size=cur_population)
+        current_K_plus = 4
+    elif current_K_plus == 4:
+        grow_rate = 0.9
+        cur_population = population
+        for (i, point) in enumerate(points):
+            if i != 0: 
+                cur_population = cur_population * grow_rate
+                demography.add_population_parameters_change(point, initial_size=cur_population)
+        current_K_plus = 5
+    elif current_K_plus == 5:
+        demography.add_population_parameters_change(time=400,   population="A", initial_size=0.1 * initial_size)
+        demography.add_population_parameters_change(time=2400,  population="A", initial_size=1.0 * initial_size)
+        demography.add_population_parameters_change(time=8000,  population="A", initial_size=0.5 * initial_size)
+        demography.add_population_parameters_change(time=40000, population="A", initial_size=1.0 * initial_size)
+        demography.add_population_parameters_change(time=80000, population="A", initial_size=2.0 * initial_size)
+
+        current_K_plus = 0
+    
+    return demography
+
+def get_set3(initial_size: int = 10_000, random_seed: int = 42) -> 'msprime.Demography':
+
+    global current_K
+    points = limits
+    population = 10_000
+    demography = msprime.Demography()
+    demography.add_population(name="A", initial_size=initial_size)   
+
+    #current_K = np.random.choice([0,1,2,3,4])
+
+    if current_K == 0:
+        current_K = 1
+    elif current_K == 1:
+        demography.add_population_parameters_change(2900, initial_size=0.5 * initial_size)
+        demography.add_population_parameters_change(6000, initial_size=1. * initial_size)
+        demography.add_population_parameters_change(15000, initial_size=.5 * initial_size)
+        demography.add_population_parameters_change(18000, initial_size=1. * initial_size)
+        demography.add_population_parameters_change(30000, initial_size=2. * initial_size)
+
+        # demography.add_population_parameters_change(time=400,   population="A", initial_size=0.1 * initial_size)
+        # demography.add_population_parameters_change(time=2400,  population="A", initial_size=1.0 * initial_size)
+        # demography.add_population_parameters_change(time=8000,  population="A", initial_size=0.5 * initial_size)
+        # demography.add_population_parameters_change(time=40000, population="A", initial_size=1.0 * initial_size)
+        # demography.add_population_parameters_change(time=80000, population="A", initial_size=2.0 * initial_size)
+
+        current_K = 2
+    elif current_K == 2:
+        a, b = 0.1, 2.0    
+        for (i, point) in enumerate(points):
+            coeff = np.random.uniform(a, b)
+            if i != 0: 
+                demography.add_population_parameters_change(point, initial_size=coeff * population)
+        current_K = 3
+    elif current_K == 3:
+        grow_rate = 1.1
+        cur_population = population
+        for (i, point) in enumerate(points):
+            if i != 0: 
+                cur_population = cur_population * grow_rate
+                demography.add_population_parameters_change(point, initial_size=cur_population)
+        current_K = 4
+    elif current_K == 4:
+        grow_rate = 0.9
+        cur_population = population
+        for (i, point) in enumerate(points):
+            if i != 0: 
+                cur_population = cur_population * grow_rate
+                demography.add_population_parameters_change(point, initial_size=cur_population)
+        current_K = 5
+        # current_K = 0
+    
+    elif current_K == 5: 
+        demography.add_population_parameters_change(1500, initial_size=initial_size*0.8)
+        demography.add_population_parameters_change(2200, initial_size=initial_size*0.6)
+        demography.add_population_parameters_change(3000, initial_size=initial_size*0.4)
+
+        demography.add_population_parameters_change(3400, initial_size=initial_size*0.6)
+        demography.add_population_parameters_change(3800, initial_size=initial_size*0.8)
+        demography.add_population_parameters_change(4200, initial_size=initial_size*1.0)
+
+
+        demography.add_population_parameters_change(9800, initial_size=initial_size*1.25)
+        demography.add_population_parameters_change(11000, initial_size=initial_size*1.5)
+        demography.add_population_parameters_change(12500, initial_size=initial_size*2.0)
+
+        demography.add_population_parameters_change(14000, initial_size=initial_size*1.5)
+        demography.add_population_parameters_change(15500, initial_size=initial_size*1.25)
+        demography.add_population_parameters_change(16500, initial_size=initial_size*1.0)    
+
+        demography.add_population_parameters_change(21000, initial_size=initial_size*0.8)
+        demography.add_population_parameters_change(24000, initial_size=initial_size*0.6)
+        demography.add_population_parameters_change(27000, initial_size=initial_size*0.4)
+        current_K = 0
+        
+    elif current_K == 42:
+        bootleneck_coeff = 0.1
+        start, finish = np.random.randint(0,32)
+        demography.add_population_parameters_change(limits[start], initial_size=bootleneck_coeff * initial_size)
+        demography.add_population_parameters_change(limits[finish], initial_size=1. * initial_size)
+        current_K = 0
+    
+    return demography
+
+
+def get_(initial_size: int = 10_000, random_seed: int = 42) -> 'msprime.Demography':
+    
+    demography = msprime.Demography()
+    demography.add_population(name="A", initial_size=initial_size)   
+
+    start = np.random.randint(0,31)
+    finish = start + 1
+    coeff = np.random.choice([0.5, 2])
+
+    demography.add_population_parameters_change(limits[start], initial_size=coeff * initial_size)
+    demography.add_population_parameters_change(limits[finish], initial_size=1. * initial_size)
+    return  demography
+
+
+def get_strong_bootleneck(initial_size: int = 10_000, random_seed: int = 42, bootleneck_coeff = 0.1) -> 'msprime.Demography':
+    demography = msprime.Demography()
+    demography.add_population(name="A", initial_size=initial_size)
+    demography.add_population_parameters_change(2900, initial_size=bootleneck_coeff * initial_size)
+    demography.add_population_parameters_change(6000, initial_size=1. * initial_size)
+
+    return demography
+
+
+def get_strong_antibootleneck(initial_size: int = 10_000, random_seed: int = 42, bootleneck_coeff = 10) -> 'msprime.Demography':
+    demography = msprime.Demography()
+    demography.add_population(name="A", initial_size=initial_size)
+    demography.add_population_parameters_change(2900, initial_size=bootleneck_coeff * initial_size)
+    demography.add_population_parameters_change(6000, initial_size=1. * initial_size)
+
+    return demography
+
 
 
 def simple_split(time: float, N: int, split_const: int = 5000) -> int:
@@ -167,8 +679,8 @@ def simple_split(time: float, N: int, split_const: int = 5000) -> int:
 def exponent_split(time: float, N: int) -> int:
     for i, limit in enumerate(limits):
         if limit > time:
-            return i
-    return len(limits) - 1
+            return max(i - 1, 0)
+    return max(len(limits) - 1, 0)
 
 
 def non_filter(_input):
@@ -429,7 +941,7 @@ def get_liner_generator(num_genomes: int,
     generators = [DataGenerator(num_replicates=num_genomes,
                                 lengt=genome_length,
                                 demographic_events=demographic_events_generator(random_seed=random_seed + 100 * i),
-                                random_seed=random_seed + i,
+                                #random_seed=random_seed + i,
                                 return_local_times=return_local_times,
                                 return_full_dist=return_full_dist,
                                 genome_postproccessor=genome_postproccessor,

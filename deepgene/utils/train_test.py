@@ -19,9 +19,12 @@ def fit_model(trainer: Trainer,
               ):
 
     print("Running {}-model...".format(model.name))
-    trainer.logger.experiment.log_code(config_files[0])
-    trainer.logger.experiment.log_code(config_files[1])
-    trainer.logger.experiment.log_code(config_files[2])
+    #trainer.logger.experiment.log_code(config_files[0])
+    #trainer.logger.experiment.log_code(config_files[1])
+    #trainer.logger.experiment.log_code(config_files[2])
+
+    print(f"!!! = {model}")
+    print(f"!!! = {data_module}")
 
     trainer.fit(model=model, datamodule=data_module)
 

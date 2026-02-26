@@ -6,12 +6,13 @@ import torch
 import torch.nn as nn
 from pytorch_lightning import LightningModule
 import torch.nn.functional as F
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, accuracy_score, precision_score, recall_score
 from matplotlib import pyplot as plt
 from torchtyping import TensorType, patch_typeguard
 from typeguard import typechecked
 from pytorch_lightning.loggers.comet import CometLogger
-from deepgene.utils import create_heatmap, create_dist_plot
+from deepgene.utils import create_heatmap, create_dist_plot, create_NE_plot
+from deepgene.data import get_const_demographcs, get_humanlike, get_zigzag, get_liner_generator, do_filter, do_filter_2
 
 patch_typeguard()
 
@@ -46,6 +47,103 @@ class CategoricalModel(LightningModule):
         # loss = loss1 + loss2
         # self.log("x", loss1, on_step=True, logger=True, prog_bar=True)
         return loss1
+    
+    def _validate_on_demography(self, demography, dem_name: str, seq_len: int):
+        """Проверка модели на конкретной демографии"""
+        if not isinstance(self.logger, CometLogger):
+            return
+        
+        total_length = 10 * seq_len
+        num_chunks = max(1, total_length // seq_len)
+        genome_length = seq_len
+        
+        # Генерируем данные
+        generator = get_liner_generator(
+            num_genomes=num_chunks,
+            genome_length=genome_length,
+            num_generators=1,
+            random_seed=424242,  # Для воспроизводимости
+            return_local_times=True,
+            return_full_dist=False,
+            genome_postproccessor=do_filter,
+            times_postproccessor=do_filter_2,
+            demographic_events_generator=lambda **kwargs: demography
+        )
+        
+        # Собираем предсказания и истинные значения
+        y_true_all = []
+        y_pred_all = []
+        y_pred_probs_all = []
+        
+        self.eval()
+        with torch.no_grad():
+            for mutations, d_times in generator:
+                mutations = np.array(mutations, dtype=np.float32)
+                d_times = np.array(d_times, dtype=np.int32)
+                
+                X = torch.from_numpy(mutations).unsqueeze(0).to(self.device)
+                
+                # Проверяем, является ли модель Reformer и добавляем padding если нужно
+                # Используем проверку через имя класса, чтобы избежать циклического импорта
+                is_reformer = self.__class__.__name__ == 'ReformerLabeler'
+                original_seq_len = X.shape[1]
+                
+                if is_reformer:
+                    # Получаем chunk_length из конфигурации (по умолчанию 80)
+                    chunk_length = getattr(self.config, 'lsh_attn_chunk_length', 80)
+                    
+                    # Вычисляем необходимое количество padding
+                    remainder = original_seq_len % chunk_length
+                    if remainder != 0:
+                        pad_length = chunk_length - remainder
+                        # Добавляем padding справа (последняя размерность - это длина последовательности)
+                        # Форма X: (batch_size, seq_len), поэтому pad по второй размерности
+                        X = F.pad(X, (0, pad_length), mode='constant', value=0.0)
+                
+                logits = self.forward(X)
+                
+                # Обрезаем выходные данные до исходной длины последовательности для Reformer
+                if is_reformer and original_seq_len != X.shape[1]:
+                    logits = logits[:, :original_seq_len, :]
+                
+                y_pred_probs = F.softmax(logits, dim=-1).cpu()
+                y_pred = torch.argmax(y_pred_probs, dim=-1).cpu().numpy()[0]
+                
+                y_true_all.extend(d_times)
+                y_pred_all.extend(y_pred)
+                y_pred_probs_all.append(y_pred_probs[0])
+        
+        if len(y_true_all) == 0:
+            return
+        
+        # Вычисляем метрики
+        y_true_array = np.array(y_true_all)
+        y_pred_array = np.array(y_pred_all)
+        
+        accuracy = accuracy_score(y_true_array, y_pred_array)
+        precision = precision_score(y_true_array, y_pred_array, average='macro', zero_division=0, labels=np.arange(self.n_class))
+        recall = recall_score(y_true_array, y_pred_array, average='macro', zero_division=0, labels=np.arange(self.n_class))
+        
+        # Логируем метрики
+        self.log(f"val_{dem_name}_accuracy", accuracy, on_step=False, logger=True)
+        self.log(f"val_{dem_name}_precision", precision, on_step=False, logger=True)
+        self.log(f"val_{dem_name}_recall", recall, on_step=False, logger=True)
+        
+        # Создаем график
+        if len(y_pred_probs_all) > 0:
+            # Объединяем все предсказания в один тензор
+            y_pred_combined = torch.cat(y_pred_probs_all, dim=0)
+            y_true_tensor = torch.from_numpy(y_true_array).long()
+            
+            # Создаем heatmap (нужны тензоры согласно сигнатуре функции)
+            heatmap = create_heatmap(y_pred_combined, y_true_tensor, min(3000, len(y_true_array)))
+            self.logger.experiment.log_figure(figure_name=f"val_{dem_name}_heatmap", step=self.val_step_counter)
+            plt.close()
+            
+            # Создаем NE plot (нужны тензоры)
+            Ne_plot = create_NE_plot(y_pred_combined, y_true_tensor)
+            self.logger.experiment.log_figure(figure_name=f"val_{dem_name}_Ne", step=self.val_step_counter)
+            plt.close()
 
     @typechecked
     def validation_step(self, batch: Tuple[TensorType["batch", "genome_length"], TensorType["batch", "genome_length"]],
@@ -53,8 +151,8 @@ class CategoricalModel(LightningModule):
         x_batch, y_batch = batch
         logits = self.forward(x_batch)
         loss1 = self.loss1(logits, y_batch)
+        # self.log("val_loss", loss1.mean(), on_step=False, logger=True, prog_bar=True)
         self.log("val_loss", loss1, on_step=False, logger=True, prog_bar=True)
-
         # plot image
         x_true, y_true = x_batch[0], y_batch[0]
         y_pred = F.softmax(logits[0], dim=-1)
@@ -75,6 +173,17 @@ class CategoricalModel(LightningModule):
             self.logger.experiment.log_figure(figure_name="dist", step=self.val_step_counter)  # heatmap upload
             plt.close()
 
+            ## Ne
+            Ne = create_NE_plot(y_pred, y_true)
+            self.logger.experiment.log_figure(figure_name="Ne", step=self.val_step_counter)  # Ne upload
+            plt.close()
+            ##
+
+
+            # Установить низкий DPI для confusion matrix
+            original_dpi = plt.rcParams['figure.dpi']
+            plt.rcParams['figure.dpi'] = 50
+            
             ConfusionMatrixDisplay.from_predictions(y_true.long(),
                                                     torch.argmax(y_pred, dim=-1).long(),
                                                     labels=np.arange(self.n_class),
@@ -82,6 +191,24 @@ class CategoricalModel(LightningModule):
                                                     normalize='true')
             self.logger.experiment.log_figure(figure_name="confusion", step=self.val_step_counter)  # heatmap upload
             plt.close()
+            
+            # Восстановить оригинальный DPI
+            plt.rcParams['figure.dpi'] = original_dpi
+            
+            # Проверки на конкретных демографиях
+            seq_len = x_batch.shape[1]  # Получаем seq_len из батча
+            
+            # Проверка на const демографии
+            const_dem = get_const_demographcs()
+            self._validate_on_demography(const_dem, "const", seq_len)
+            
+            # Проверка на hl (humanlike) демографии
+            hl_dem = get_humanlike()
+            self._validate_on_demography(hl_dem, "hl", seq_len)
+            
+            # Проверка на zigzag демографии
+            zigzag_dem = get_zigzag()
+            self._validate_on_demography(zigzag_dem, "zigzag", seq_len)
 
         self.val_step_counter += 1
 

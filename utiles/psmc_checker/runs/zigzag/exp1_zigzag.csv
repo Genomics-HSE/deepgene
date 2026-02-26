@@ -1,0 +1,2 @@
+psmc_path,png_path,true_demography,bin_size,mu,generation_time,N0,n_points,FMSE,RMSE,FMAE,nn_metrics_source,nn_FMSE,nn_RMSE,nn_FMAE
+/Users/evgen/Desktop/newnewnew/deepgene_new_10_v11/psmc_checker/runs/zigzag/exp1_zigzag.psmc,/Users/evgen/Desktop/newnewnew/deepgene_new_10_v11/psmc_checker/runs/zigzag/exp1_zigzag.png,get_zigzag,100,1.25e-07,25.0,11193.6826,64,0.03678734084971662,0.1918002629031478,0.16436857764046273,,,,

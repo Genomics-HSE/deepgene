@@ -8,7 +8,7 @@ from torchtyping import TensorType, patch_typeguard
 from typeguard import typechecked
 
 from .base_models import CategoricalModel, OrdinalModel, ConvEmbedding, NoEmbedding, Predictor
-from deepgene.loss import KLDivLoss, CrossEntropyLoss, EMD_squared_loss, CTC_loss, MYLOSS
+from deepgene.loss import KLDivLoss, CrossEntropyLoss, EMD_squared_loss, CTC_loss, MYLOSS, L1Loss, NeLoss, CEandEMD, HuberLoss, NllLoss, CDW_CELoss
 
 patch_typeguard()
 
@@ -19,7 +19,10 @@ class GruLabeler(CategoricalModel):
                  input_size: int,
                  hidden_size: int,
                  num_layers: int,
-                 predictor: Predictor
+                 predictor: Predictor,
+                 loss: str = "CrossEntropyLoss",
+                 learning_rate: float = 1e-3,
+                 weight_decay: float = 1e-4
                  ):
         super().__init__()
         self.save_hyperparameters(ignore=['embedding', 'predictor'])
@@ -32,11 +35,33 @@ class GruLabeler(CategoricalModel):
                           batch_first=True,
                           dropout=0.1)
         self.predictor = predictor
-        
-        # self.loss = MYLOSS(n_class, device)
-        # self.loss = functools.partial(EMD_squared_loss, n_class)
-        # self.loss = CrossEntropyLoss
-        self.loss1 = functools.partial(KLDivLoss, n_class)
+        self.learning_rate = learning_rate
+        self.weight_decay = weight_decay
+
+        # resolve loss from config
+        if isinstance(loss, str):
+            if loss == "CrossEntropyLoss":
+                self.loss1 = CrossEntropyLoss
+            elif loss == "KLDivLoss":
+                self.loss1 = functools.partial(KLDivLoss, n_class)
+            elif loss == "EMD_squared_loss":
+                self.loss1 = functools.partial(EMD_squared_loss, n_class)
+            elif loss == "L1Loss":
+                self.loss1 = functools.partial(L1Loss, n_class)
+            elif loss == "HuberLoss":
+                self.loss1 = functools.partial(HuberLoss, n_class)
+            elif loss == "NllLoss":
+                self.loss1 = NllLoss
+            elif loss == "CEandEMD":
+                self.loss1 = functools.partial(CEandEMD, n_class)
+            elif loss == "CDW_CELoss":
+                self.loss1 = CDW_CELoss(num_classes=n_class)
+            else:
+                # default fallback
+                self.loss1 = CrossEntropyLoss
+        else:
+            # allow passing callable directly via gin
+            self.loss1 = loss
 
     @typechecked
     def forward(self, X: TensorType["batch", "genome_length"]) -> TensorType["batch", "genome_length", "hidden_size"]:
@@ -46,7 +71,7 @@ class GruLabeler(CategoricalModel):
         return output
     
     def configure_optimizers(self) -> torch.optim.Optimizer:
-        optimizer = torch.optim.Adam(self.parameters(), lr=1e-3, weight_decay=1e-4)
+        optimizer = torch.optim.Adam(self.parameters(), lr=self.learning_rate, weight_decay=self.weight_decay)
         return optimizer
     
     @property

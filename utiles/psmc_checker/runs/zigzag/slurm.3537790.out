@@ -1,0 +1,2 @@
+slurmstepd: error: execve(): /home/evkhomutov/deepgene_final/deepgene_new_10_v11/psmc_checker/psmc: Permission denied
+srun: error: cn-038: task 0: Exited with exit code 13

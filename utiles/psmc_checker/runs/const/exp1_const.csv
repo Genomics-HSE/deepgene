@@ -1,0 +1,2 @@
+psmc_path,png_path,true_demography,bin_size,mu,generation_time,N0,n_points,FMSE,RMSE,FMAE,nn_metrics_source,nn_FMSE,nn_RMSE,nn_FMAE
+/Users/evgen/Desktop/newnewnew/deepgene_new_10_v11/psmc_checker/runs/const/exp1_const.psmc,/Users/evgen/Desktop/newnewnew/deepgene_new_10_v11/psmc_checker/runs/const/exp1_const.png,get_const_demographcs,100,1.25e-07,25.0,8119.415260000001,64,0.01390860152080092,0.11793473415750307,0.08102729127345168,,,,
